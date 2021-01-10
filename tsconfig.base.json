@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2019"
+  , "module": "CommonJS"
+  , "strict": true
+  , "baseUrl": "."
+  , "paths": {
+      "@src/*": ["src/*"]
+    , "@test/*": ["__tests__/*"]
+    , "@utils/*": ["src/utils/*"]
+    }
+  }
+}

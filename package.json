@@ -1,0 +1,52 @@
+{
+  "name": "unotify-for-electron",
+  "version": "0.1.0",
+  "repository": "git@github.com:UniversalNotification/unotify-for-electron.git",
+  "files": [
+    "lib"
+  ],
+  "author": "BlackGlory <woshenmedoubuzhidao@blackglory.me>",
+  "license": "MIT",
+  "description": "",
+  "main": "lib/main.js",
+  "bin": {
+    "unotify": "lib/cli.js"
+  },
+  "scripts": {
+    "start": "electron .",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet src",
+    "dev": "yarn build && yarn start",
+    "dev:debug": "node --inspect-brk node_modules/.bin/ts-node src/index.ts",
+    "prepublishOnly": "yarn clean && yarn build",
+    "clean": "rm -rf lib",
+    "build": "tsc --project tsconfig.build.json && tscpaths -p tsconfig.build.json -s ./src -o ./lib",
+    "release": "standard-version"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint && yarn build",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@types/node-ipc": "^9.1.3",
+    "@typescript-eslint/eslint-plugin": "^4.12.0",
+    "@typescript-eslint/parser": "^4.12.0",
+    "electron": "^11.1.1",
+    "eslint": "^7.17.0",
+    "husky": "^4.3.7",
+    "standard-version": "^9.1.0",
+    "ts-node": "^9.1.1",
+    "tscpaths": "^0.0.9",
+    "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "@blackglory/wait-for": "^0.2.2",
+    "commander": "^6.2.1",
+    "node-ipc": "^9.1.3",
+    "rxjs": "^7.0.0-beta.9",
+    "universal-notification": "^0.1.1"
+  }
+}
