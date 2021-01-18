@@ -15,16 +15,18 @@
   "scripts": {
     "start": "electron .",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet src",
-    "dev": "yarn build && yarn start",
+    "dev": "run-s build start",
     "dev:debug": "node --inspect-brk node_modules/.bin/ts-node src/index.ts",
-    "prepublishOnly": "yarn clean && yarn build",
-    "clean": "rm -rf lib",
-    "build": "tsc --project tsconfig.build.json && tscpaths -p tsconfig.build.json -s ./src -o ./lib",
+    "prepublishOnly": "run-s clean build",
+    "clean": "rimraf lib",
+    "build": "run-s build:*",
+    "build:compile": "tsc --project tsconfig.build.json",
+    "build:patch": "tscpaths -p tsconfig.build.json -s ./src -o ./lib",
     "release": "standard-version"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint && yarn build",
+      "pre-commit": "run-s lint build",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -37,6 +39,8 @@
     "electron": "^11.1.1",
     "eslint": "^7.17.0",
     "husky": "^4.3.7",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
     "standard-version": "^9.1.0",
     "ts-node": "^9.1.1",
     "tscpaths": "^0.0.9",
