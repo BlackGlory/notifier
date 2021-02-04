@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "unotify-for-electron",
   "version": "0.1.0",
   "repository": "git@github.com:UniversalNotification/unotify-for-electron.git",
@@ -49,6 +50,7 @@
   "dependencies": {
     "@blackglory/wait-for": "^0.2.6",
     "commander": "^7.0.0",
+    "extra-promise": "^0.14.2",
     "node-ipc": "^9.1.3",
     "rxjs": "^7.0.0-beta.9",
     "universal-notification": "^0.1.2"
