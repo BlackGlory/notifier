@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "unotify-for-electron",
+  "name": "unotifier-desktop",
   "version": "0.1.0",
-  "repository": "git@github.com:UniversalNotification/unotify-for-electron.git",
+  "repository": "git@github.com:UniversalNotification/unotifier-desktop.git",
   "files": [
     "lib"
   ],
