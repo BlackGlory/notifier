@@ -1,6 +1,4 @@
-import { Subject } from 'rxjs'
-
-export const newNotificationObservable = new Subject<INotification[]>()
+import { newNotificationObservable } from '@renderer/notification-context'
 
 export const api: INotificationRendererAPI = {
   ping() {

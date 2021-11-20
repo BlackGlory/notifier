@@ -3,7 +3,7 @@ import { Notification } from '@components/notification'
 import { MainAPIContext } from '@renderer/notification-context'
 import { useResizeObserver } from 'extra-react-hooks'
 import { useImmer } from 'use-immer'
-import { newNotificationObservable } from '@renderer/apis/notification'
+import { newNotificationObservable } from '@renderer/notification-context'
 import { useSubscription } from 'observable-hooks'
 
 export function NotificationPage() {
@@ -26,10 +26,10 @@ export function NotificationPage() {
   }, [notificationList])
 
   return (
-    <div ref={container} className='min-w-96 space-y-1'>
+    <div ref={container} className='min-w-[24rem] space-y-1'>
       {Array.from(notificationList).reverse().map(notification => (
         <Notification 
-          key={notification.uuid}
+          key={notification.id}
           title={notification.title}
           message={notification.message}
           iconUrl={notification.iconUrl}
@@ -40,19 +40,19 @@ export function NotificationPage() {
             notification.url
             ? () => {
                 openURL(notification.url!)
-                closeNotification(notification.uuid)
+                closeNotification(notification.id)
               }
             : undefined
           }
-          onCloseButtonClick={() => closeNotification(notification.uuid)}
+          onCloseButtonClick={() => closeNotification(notification.id)}
         />
       ))}
     </div>
   )
 
-  function closeNotification(uuid: string) {
+  function closeNotification(id: string): void {
     updateNotificationList(list => {
-      const index = list.findIndex(x => x.uuid === uuid)
+      const index = list.findIndex(x => x.id === id)
       if (index !== -1) {
         list.splice(index, 1)
       }

@@ -6,48 +6,52 @@ import {
 , UniversalNotification
 } from 'universal-notification'
 import { getError, getSuccess } from 'return-style'
-import { nanoid } from 'nanoid'
+import { createTimeBasedId, stringifyTimeBasedId } from '@main/utils/create-id'
 
-export function createServer({ notify }: {
+interface IServerOptions {
   notify: (notifications: INotification[]) => void
-}): http.Server {
+}
+
+export function createServer({ notify }: IServerOptions): http.Server {
   const handler: RequestHandler = async req => {
     if (req.url === '/health') return 'OK'
 
+    const senderId = req.headers['x-sender-id'] as string | undefined
     const payload = await json(req)
     if (payload) {
       if (Array.isArray(payload)) {
         const notifications = payload
           .filter(x => getSuccess(() => validateUniversalNotification(x)))
-          .map(x => ({
-            ...x as UniversalNotification[]
-          , uuid: nanoid()
-          , senderId: req.headers['x-sender-id'] as string | undefined
-          , timestamp: Date.now()
-          }))
+          .map(x => createNotificationFromUniversalNotification(x, senderId))
         notify(notifications)
-        return ''
       } else {
         const err = getError(() => validateUniversalNotification(payload))
         if (err) {
           throw createError(400, err.message)
         } else {
-          const notification = payload as UniversalNotification
-          notify([
-            {
-              ...notification
-            , uuid: nanoid()
-            , senderId: req.headers['x-sender-id'] as string | undefined
-            , timestamp: Date.now()
-            }
-          ])
-          return ''
+          notify([createNotificationFromUniversalNotification(payload, senderId)])
         }
       }
+      return ''
     } else {
       throw createError(400, 'The payload is not a valid JSON')
     }
   }
 
   return new http.Server(micro(handler))
+}
+
+function createNotificationFromUniversalNotification(
+  notification: UniversalNotification
+, senderId?: string
+): INotification {
+  const [timestamp, num] = createTimeBasedId()
+  const id = stringifyTimeBasedId([timestamp, num])
+
+  return {
+    ...notification
+  , id
+  , senderId
+  , timestamp
+  }
 }

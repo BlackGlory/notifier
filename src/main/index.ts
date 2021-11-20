@@ -9,12 +9,17 @@ import { createClientInMain } from '@delight-rpc/electron'
 import { createServerInMain } from '@delight-rpc/electron'
 import { createAppMainAPI } from './apis/app'
 import { createNotificationMainAPI } from './apis/notification'
-import { RequestProxy } from 'delight-rpc'
+import * as DelightRPC from 'delight-rpc'
 import { Deferred } from 'extra-promise'
+import { initConfig } from './config'
+import { openDatabase } from './database'
 
 go(async () => {
   setAutoReload(isDev)
   preventMultipleInstances()
+
+  initConfig()
+  openDatabase()
 
   await app.whenReady()
 
@@ -28,10 +33,10 @@ go(async () => {
   } = createAppWindow()
   setupTray(appWindow)
 
-  const notificationRendererClient = new Deferred<RequestProxy<INotificationRendererAPI>>()
-  const appRendererClient = new Deferred<RequestProxy<IAppRendererAPI>>()
+  const notificationRendererClient = new Deferred<DelightRPC.ClientProxy<INotificationRendererAPI>>()
+  const appRendererClient = new Deferred<DelightRPC.ClientProxy<IAppRendererAPI>>()
 
-  ipcMain.once('app-message-port-for-server', async event => {
+  ipcMain.on('app-message-port-for-server', async event => {
     const [port] = event.ports
     port.start()
     createServerInMain(
@@ -43,20 +48,20 @@ go(async () => {
     )
   })
 
-  ipcMain.once('notification-message-port-for-server', event => {
+  ipcMain.on('notification-message-port-for-server', event => {
     const [port] = event.ports
     port.start()
     createServerInMain(createNotificationMainAPI(notificationWindow), port)
   })
 
-  ipcMain.once('app-message-port-for-client', async event => {
+  ipcMain.on('app-message-port-for-client', async event => {
     const [port] = event.ports
     port.start()
     const [client] = createClientInMain<IAppRendererAPI>(port)
     appRendererClient.resolve(client)
   })
 
-  ipcMain.once('notification-message-port-for-client', async event => {
+  ipcMain.on('notification-message-port-for-client', async event => {
     const [port] = event.ports
     port.start()
     const [client] = createClientInMain<INotificationRendererAPI>(port)

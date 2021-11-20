@@ -16,6 +16,7 @@ export function createNotificationWindow(): {
   , alwaysOnTop: true
   , skipTaskbar: false
   , fullscreenable: false
+  , focusable: false
   , webPreferences: {
       preload: path.join(app.getAppPath(), 'lib/renderer/notification-preload.js')
     , devTools: isDev

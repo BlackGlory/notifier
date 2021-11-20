@@ -7,8 +7,8 @@ export function createAppWindow(): {
   load(): Promise<void>
 } {
   const window = new BrowserWindow({
-    width: 800
-  , height: 600
+    width: 600
+  , height: 500
   , minWidth: 600
   , minHeight: 500
   , resizable: true

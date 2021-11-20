@@ -1,37 +1,55 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { Settings } from '@components/settings'
 import { History } from '@components/history'
 import { AdjustmentsIcon, ClockIcon } from '@heroicons/react/outline'
+import { Tab } from '@headlessui/react'
+import classNames from 'classnames'
 
 export function AppPage() {
+  const tabs: Array<{
+    id: string
+    header: React.ReactNode
+    content: React.ReactNode
+  }> = [
+    {
+      id: 'settings'
+    , header: <>
+        <AdjustmentsIcon className='w-7 h-7' />
+        <span>Settings</span>
+      </>
+    , content: <Settings />
+    }
+  , {
+      id: 'history'
+    , header: <>
+        <ClockIcon className='w-7 h-7' />
+        <span>History</span>
+      </>
+    , content: <History />
+    }
+  ]
+
   return (
-    <BrowserRouter>
-      <div className='h-screen flex flex-col'>
-        <nav className='flex bg-gray-300'>
-          <div className='flex-1'>
-            <Link to='/settings'>
-              <div className='text-gray-800 hover:bg-gray-200 w-full h-20 flex flex-col justify-center items-center'>
-                <AdjustmentsIcon className='w-7 h-7' />
-                <span>Settings</span>
-              </div>
-            </Link>
-          </div>
-          <div className='flex-1'>
-            <Link to='/history'>
-              <div className='text-gray-800 hover:bg-gray-200 w-full h-20 flex flex-col justify-center items-center'>
-                <ClockIcon className='w-7 h-7' />
-                <span>History</span>
-              </div>
-            </Link>
-          </div>
-        </nav>
-        <div className='flex-grow'>
-          <Routes>
-            <Route path='/settings' element={<Settings />} />
-            <Route path='/history' element={<History />} />
-          </Routes>
-        </div>
-      </div>
-    </BrowserRouter>
+    <div className='h-screen flex flex-col overflow-hidden'>
+      <Tab.Group>
+        <Tab.List className='flex'>
+          {tabs.map(tab => (
+            <Tab
+              key={tab.id}
+              className={({ selected }) => classNames(
+                'text-gray-800 bg-gray-300 hover:bg-gray-200 w-full h-20 flex flex-col justify-center items-center border-b-2'
+              , selected ? 'border-blue-500': 'border-transparent'
+              )}
+            >{tab.header}</Tab>
+          ))}
+        </Tab.List>
+        <Tab.Panels className='h-full overflow-y-auto'>
+          {tabs.map(tab => (
+            <Tab.Panel key={tab.id}>
+              {tab.content}
+            </Tab.Panel>
+          ))}
+        </Tab.Panels>
+      </Tab.Group>
+    </div>
   )
 }

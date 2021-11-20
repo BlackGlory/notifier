@@ -1,6 +1,9 @@
 import { createContext } from 'react'
-import { RequestProxy } from 'delight-rpc'
+import * as DelightRPC from 'delight-rpc'
+import { Subject } from 'rxjs'
 
-export const MainAPIContext = createContext<RequestProxy<INotificationMainAPI>>(
-  {} as RequestProxy<INotificationMainAPI>
+export const MainAPIContext = createContext<DelightRPC.ClientProxy<INotificationMainAPI>>(
+  {} as DelightRPC.ClientProxy<INotificationMainAPI>
 )
+
+export const newNotificationObservable = new Subject<INotification[]>()

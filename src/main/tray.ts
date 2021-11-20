@@ -2,6 +2,7 @@ import { app, Tray, Menu, MenuItem, BrowserWindow } from 'electron'
 import { assert } from '@blackglory/errors'
 import { isUndefined } from '@blackglory/types'
 import * as path from 'path'
+import { closeDatabase } from './database'
 
 let tray: Tray | undefined // prevent GC
 
@@ -26,6 +27,7 @@ export function setupTray(appWindow: BrowserWindow) {
       type: 'normal'
     , label: 'Quit'
     , click() {
+        closeDatabase()
         app.exit()
       }
     })
