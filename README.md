@@ -28,6 +28,13 @@ yarn dev
 yarn start
 ```
 
+## 打包
+```sh
+yarn clean
+yarn build
+yarn package
+```
+
 ## 架构
 ### Main
 功能性职责:
