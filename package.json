@@ -35,7 +35,7 @@
     }
   },
   "devDependencies": {
-    "@blackglory/electron-packager": "^1.0.0",
+    "@blackglory/electron-packager": "^1.0.1",
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
     "@types/jest": "^27.0.3",
