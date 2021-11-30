@@ -19,10 +19,14 @@
     "clean": "run-p clean:*",
     "clean:main": "rimraf lib",
     "clean:renderer": "rimraf dist",
+    "clean:package": "rimraf build",
     "build": "run-p build:*",
     "build:main": "tsc --project tsconfig.build.json",
     "build:renderer": "webpack --config webpack.prod.js",
-    "release": "standard-version"
+    "release": "standard-version",
+    "package": "electron-packager . --icon=public/icon.png --out=build --asar",
+    "package:dev": "electron-packager . --icon=public/icon.png --out=build",
+    "package:all": "electron-packager . --icon=public/icon.png --out=build --asar --all"
   },
   "husky": {
     "hooks": {
@@ -44,7 +48,7 @@
     "copy-webpack-plugin": "^10.0.0",
     "css-loader": "^6.5.1",
     "electron": "^16.0.2",
-    "electron-reloader": "^1.2.1",
+    "electron-packager": "^15.4.0",
     "eslint": "8.3.0",
     "extra-fetch": "^1.8.2",
     "extra-request": "^3.0.2",
@@ -79,6 +83,7 @@
     "classnames": "^2.3.1",
     "delight-rpc": "^1.1.1",
     "electron-is-dev": "^2.0.0",
+    "electron-reloader": "^1.2.1",
     "electron-store": "^8.0.1",
     "extra-filesystem": "^0.3.13",
     "extra-generator": "^0.2.14",
