@@ -3,32 +3,35 @@ import { MainAPIContext } from '@renderer/app-context'
 import { Switch } from '@headlessui/react'
 import { useMount } from 'extra-react-hooks'
 import { go } from '@blackglory/go'
+import classNames from 'classnames'
+import { all } from 'extra-promise'
 
 export function Settings() {
   const mainAPI = useContext(MainAPIContext)
-  const [serverRunning, setServerRunning] = useState<boolean>(false)
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
+  const [isServerRunning, setIsServerRunning] = useState<boolean>(false)
   const [serverHostname, setServerHostname] = useState<string>('localhost')
   const [serverPort, setServerPort] = useState<number>(8080)
   const [silentMode, setSilentMode] = useState<boolean>(false)
 
   useMount(() => {
     go(async () => {
-      setServerRunning(await mainAPI.Server.isServerRunning())
-    })
-
-    go(async () => {
-      setSilentMode(await mainAPI.Config.getSilentMode())
-    })
-
-    go(async () => {
-      const { hostname, port } = await mainAPI.Config.getServer()
-      setServerHostname(hostname)
-      setServerPort(port)
+      const { server, silentMode, isServerRunning } = await all({
+        isServerRunning: mainAPI.Server.isServerRunning()
+      , silentMode: mainAPI.Config.getSilentMode()
+      , server: mainAPI.Config.getServer()
+      })
+      
+      setServerHostname(server.hostname)
+      setServerPort(server.port)
+      setSilentMode(silentMode)
+      setIsServerRunning(isServerRunning)
+      setIsLoaded(true)
     })
   })
 
   return (
-    <div className='m-5'>
+    <div className={classNames('m-5', { 'hidden': !isLoaded })}>
       <Headline>HTTP Server</Headline>
       <div className='space-y-4'>
         <div className='max-w-md grid grid-cols-4 gap-y-2 gap-x-2 items-center'>
@@ -55,22 +58,22 @@ export function Settings() {
 
         <div className='space-y-2'>
           <div>
-            {`Server Status: ${serverRunning ? 'Running' : 'Stopped'}`}
+            {`Server Status: ${isServerRunning ? 'Running' : 'Stopped'}`}
           </div>
           <Switch
-            checked={serverRunning}
+            checked={isServerRunning}
             onChange={async on => {
               if (on) {
                 await mainAPI.Server.startServer(serverHostname, serverPort)
               } else {
                 await mainAPI.Server.stopServer()
               }
-              setServerRunning(on)
+              setIsServerRunning(on)
             }}
             className={'bg-gray-300 py-1 px-2'}
           >
             <span>
-              {serverRunning ? 'Stop Server' : 'Start Server'}
+              {isServerRunning ? 'Stop Server' : 'Start Server'}
             </span>
           </Switch>
         </div>
