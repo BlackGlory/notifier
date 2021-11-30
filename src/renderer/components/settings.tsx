@@ -13,6 +13,10 @@ export function Settings() {
 
   useMount(() => {
     go(async () => {
+      setServerRunning(await mainAPI.Server.isServerRunning())
+    })
+
+    go(async () => {
       setSilentMode(await mainAPI.Config.getSilentMode())
     })
 
@@ -57,9 +61,9 @@ export function Settings() {
             checked={serverRunning}
             onChange={async on => {
               if (on) {
-                await mainAPI.startServer(serverHostname, serverPort)
+                await mainAPI.Server.startServer(serverHostname, serverPort)
               } else {
-                await mainAPI.stopServer()
+                await mainAPI.Server.stopServer()
               }
               setServerRunning(on)
             }}

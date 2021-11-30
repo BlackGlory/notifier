@@ -26,7 +26,7 @@ export function createAppMainAPI({ appRendererAPI, notificationRendererAPI }: {
       return 'pong'
     }
 
-  , ...go(() => {
+  , Server: go(() => {
       let server: http.Server | undefined
       return {
         startServer(hostname, port) {
@@ -43,6 +43,10 @@ export function createAppMainAPI({ appRendererAPI, notificationRendererAPI }: {
         }
       , stopServer() {
           server?.close()
+          server = undefined
+        }
+      , isServerRunning() {
+          return !!server
         }
       }
     })

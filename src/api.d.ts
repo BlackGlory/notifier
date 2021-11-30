@@ -11,8 +11,12 @@ interface INotification {
 
 interface IAppMainAPI {
   ping(): string
-  startServer(hostname: string, port: number): void
-  stopServer(): void
+
+  Server: {
+    startServer(hostname: string, port: number): void
+    stopServer(): void
+    isServerRunning(): boolean
+  }
 
   Config: {
     setServerHostname(hostname: string): void
