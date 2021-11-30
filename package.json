@@ -35,6 +35,7 @@
     }
   },
   "devDependencies": {
+    "@blackglory/electron-packager": "^1.0.0",
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
     "@types/jest": "^27.0.3",
@@ -48,7 +49,6 @@
     "copy-webpack-plugin": "^10.0.0",
     "css-loader": "^6.5.1",
     "electron": "^16.0.2",
-    "electron-packager": "^15.4.0",
     "eslint": "8.3.0",
     "extra-fetch": "^1.8.2",
     "extra-request": "^3.0.2",
