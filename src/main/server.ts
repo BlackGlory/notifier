@@ -7,6 +7,7 @@ import {
 } from 'universal-notification'
 import { getError, getSuccess } from 'return-style'
 import { createTimeBasedId, stringifyTimeBasedId } from '@main/utils/create-id'
+import { isArray } from '@blackglory/types'
 
 interface IServerOptions {
   notify: (notifications: INotification[]) => void
@@ -19,7 +20,7 @@ export function createServer({ notify }: IServerOptions): http.Server {
     const senderId = req.headers['x-sender-id'] as string | undefined
     const payload = await json(req)
     if (payload) {
-      if (Array.isArray(payload)) {
+      if (isArray<INotification>(payload)) {
         const notifications = payload
           .filter(x => getSuccess(() => validateUniversalNotification(x)))
           .map(x => createNotificationFromUniversalNotification(x, senderId))
