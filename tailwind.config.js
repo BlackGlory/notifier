@@ -1,10 +1,8 @@
 module.exports = {
-  mode: 'jit'
-, purge: [
+  content: [
     './src/renderer/**/*.{js,ts,jsx,tsx}'
   , './public/**/*.html'
   ]
-, darkMode: false // or 'media' or 'class'
 , theme: {
     extend: {
       minHeight: {
