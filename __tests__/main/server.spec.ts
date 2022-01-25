@@ -90,7 +90,7 @@ async function startService(): Promise<string> {
   return await new Promise<string>(resolve => {
       server.listen({ host: 'localhost', port: 0 }, () => {
       const addressInfo = server.address()
-      assert(isObject(addressInfo))
+      assert(isObject(addressInfo), 'addressInfo is not object')
 
       const address = getAddressFromAddressInfo(addressInfo)
       resolve(address)

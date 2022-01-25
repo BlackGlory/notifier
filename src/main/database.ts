@@ -22,7 +22,7 @@ export async function closeDatabase(): Promise<void> {
 }
 
 export async function addNotifications(notifications: INotification[]): Promise<void> {
-  assert(db)
+  assert(db, 'Database is not opened')
 
   await db.batch(notifications.map(notification => ({
     type: 'put'
@@ -32,7 +32,7 @@ export async function addNotifications(notifications: INotification[]): Promise<
 }
 
 export async function getAllNotifications(): Promise<INotification[]> {
-  assert(db)
+  assert(db, 'Database is not opened')
   
   return await new AsyncIterableOperator(db.createValueStream({ reverse: true }))
     .mapAsync(notification => notification as any as INotification)
@@ -46,7 +46,7 @@ export async function queryNotificationsById(
   , skip?: number
   }
 ): Promise<INotification[]> {
-  assert(db)
+  assert(db, 'Database is not opened')
 
   return await new AsyncIterableOperator(db.createReadStream({
       reverse: true
@@ -65,7 +65,7 @@ export async function queryNotificationsByTimestamp(
   , skip?: number
   }
 ): Promise<INotification[]> {
-  assert(db)
+  assert(db, 'Database is not opened')
 
   return await new AsyncIterableOperator(db.createReadStream({
       reverse: true
@@ -78,7 +78,7 @@ export async function queryNotificationsByTimestamp(
 }
 
 export async function deleteNotification(id: string): Promise<void> {
-  assert(db)
+  assert(db, 'Database is not opened')
 
   await db.del(id)
 }

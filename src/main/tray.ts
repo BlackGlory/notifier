@@ -7,7 +7,7 @@ import { closeDatabase } from './database'
 let tray: Tray | undefined // prevent GC
 
 export function setupTray(appWindow: BrowserWindow) {
-  assert(isUndefined(tray))
+  assert(isUndefined(tray), 'Tray is already setup')
 
   tray = new Tray(path.join(app.getAppPath(), 'public/icon.png'))
   tray.setToolTip('Unotifier')

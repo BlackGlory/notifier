@@ -5,6 +5,7 @@
   , "strict": true
   , "jsx": "react-jsx"
   , "esModuleInterop": true
+  , "skipLibCheck": true
   , "baseUrl": "."
   , "paths": {
       "@src/*": ["src/*"]
