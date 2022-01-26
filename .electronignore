@@ -57,7 +57,7 @@ typings/
 .env
 
 # Build
-/build
+/release
 
 # Data
 /data

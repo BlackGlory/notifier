@@ -1,11 +1,11 @@
 {
   "private": true,
-  "name": "unotifier-desktop",
   "version": "0.1.1",
+  "name": "unotifier-desktop",
+  "description": "",
   "repository": "git@github.com:UniversalNotification/unotifier-desktop.git",
   "author": "BlackGlory <woshenmedoubuzhidao@blackglory.me>",
   "license": "MIT",
-  "description": "",
   "main": "lib/main/index.js",
   "scripts": {
     "prepare": "ts-patch install -s",
@@ -19,14 +19,15 @@
     "clean": "run-p clean:*",
     "clean:main": "rimraf lib",
     "clean:renderer": "rimraf dist",
-    "clean:package": "rimraf build",
+    "clean:release": "rimraf release",
     "build": "run-p build:*",
     "build:main": "tsc --project tsconfig.build.json",
     "build:renderer": "webpack --config webpack.prod.js",
     "release": "standard-version",
-    "package": "electron-packager . --icon=public/icon.png --out=build --asar",
-    "package:dev": "electron-packager . --icon=public/icon.png --out=build",
-    "package:all": "electron-packager . --icon=public/icon.png --out=build --asar --all"
+    "package": "electron-packager . --icon=public/icon.png --out=release --asar",
+    "package:dev": "electron-packager . --icon=public/icon.png --out=release",
+    "package:all": "electron-packager . --icon=public/icon.png --out=release --asar --all",
+    "package:appx": "electron-builder build --windows appx"
   },
   "husky": {
     "hooks": {
@@ -49,6 +50,7 @@
     "copy-webpack-plugin": "^10.2.1",
     "css-loader": "^6.5.1",
     "electron": "^16.0.7",
+    "electron-builder": "^22.14.5",
     "eslint": "8.7.0",
     "extra-fetch": "^1.8.5",
     "extra-request": "^4.0.1",

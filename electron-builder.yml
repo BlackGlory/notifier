@@ -1,0 +1,9 @@
+appId: me.blackglory.unotifier-desktop
+directories:
+  output: release
+appx:
+  identityName: 29825BlackGlory.Unotifier
+  applicationId: BlackGlory.Unotifier
+  displayName: Unotifier
+  publisher: CN=99796F2F-AB57-4309-9A2C-AD2693B33372
+  publisherDisplayName: BlackGlory

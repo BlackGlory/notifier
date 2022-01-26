@@ -60,7 +60,7 @@ typings/
 # Build
 /lib
 /dist
-/build
+/release
 
 # Data
 /data
