@@ -1,20 +1,23 @@
 import { useRef, useContext, useLayoutEffect } from 'react'
 import { Notification } from '@components/notification'
 import { MainAPIContext } from '@renderer/notification-context'
-import { useResizeObserver } from 'extra-react-hooks'
+import { useResizeObserver, useMount } from 'extra-react-hooks'
 import { useImmer } from 'use-immer'
 import { newNotificationObservable } from '@renderer/notification-context'
-import { useSubscription } from 'observable-hooks'
 
 export function NotificationPage() {
   const [notificationList, updateNotificationList] = useImmer<INotification[]>([])
   const mainAPI = useContext(MainAPIContext)
   const container = useRef<HTMLDivElement>(null)
 
-  useSubscription(newNotificationObservable, newNotifications => {
-    updateNotificationList(list => {
-      list.push(...newNotifications)
+  useMount(() => {
+    const subscription = newNotificationObservable.subscribe(newNotifications => {
+      updateNotificationList(list => {
+        list.push(...newNotifications)
+      })
     })
+    
+    return () => subscription.unsubscribe()
   })
 
   useResizeObserver(() => {

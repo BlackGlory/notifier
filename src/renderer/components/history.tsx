@@ -1,6 +1,5 @@
 import { Notification } from '@components/notification'
 import { useImmer } from 'use-immer'
-import { useSubscription } from 'observable-hooks'
 import { newNotificationObservable } from '@renderer/app-context'
 import { useMount } from 'extra-react-hooks'
 import { useContext } from 'react'
@@ -24,10 +23,14 @@ export function History() {
     })
   })
 
-  useSubscription(newNotificationObservable, newNotifications => {
-    updateNotificationList(list => {
-      list.unshift(...newNotifications)
+  useMount(() => {
+    const subscription = newNotificationObservable.subscribe(newNotifications => {
+      updateNotificationList(list => {
+        list.unshift(...newNotifications)
+      })
     })
+
+    return () => subscription.unsubscribe()
   })
 
   return (
