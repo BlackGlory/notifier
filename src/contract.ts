@@ -1,15 +1,4 @@
-interface INotification {
-  id: string
-  timestamp: number 
-  title?: string
-  message?: string
-  iconUrl?: string
-  imageUrl?: string
-  url?: string
-  senderId?: string
-}
-
-interface IAppMainAPI {
+export interface IAppMainAPI {
   ping(): string
 
   Server: {
@@ -51,17 +40,28 @@ interface IAppMainAPI {
   }
 }
 
-interface INotificationMainAPI {
+export interface INotificationMainAPI {
   ping(): string
   resizeWindow(width: number, height: number): void
 }
 
-interface INotificationRendererAPI{
+export interface INotificationRendererAPI{
   ping(): string
   notify(notifications: INotification[]): void
 }
 
-interface IAppRendererAPI {
+export interface IAppRendererAPI {
   ping(): string
   notify(notifications: INotification[]): void
+}
+
+export interface INotification {
+  id: string
+  timestamp: number
+  title?: string
+  message?: string
+  iconUrl?: string
+  imageUrl?: string
+  url?: string
+  senderId?: string
 }

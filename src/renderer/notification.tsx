@@ -6,6 +6,7 @@ import { createServerInRenderer, createClientInRenderer } from '@delight-rpc/ele
 import { MainAPIContext } from './notification-context'
 import * as DelightRPC from 'delight-rpc'
 import { api } from './apis/notification'
+import { INotificationMainAPI } from '@src/contract'
 
 startRPCServer()
 const [client] = createRPCClient()

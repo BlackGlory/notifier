@@ -6,6 +6,7 @@ import { createServerInRenderer, createClientInRenderer } from '@delight-rpc/ele
 import { MainAPIContext } from './app-context'
 import * as DelightRPC from 'delight-rpc'
 import { api } from './apis/app'
+import { IAppMainAPI } from '@src/contract'
 
 startRPCServer()
 const [client] = createRPCClient()

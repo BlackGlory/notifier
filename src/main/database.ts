@@ -3,6 +3,7 @@ import { assert } from '@blackglory/errors'
 import { AsyncIterableOperator } from 'iterable-operator/lib/es2018/style/chaining'
 import { isUndefined } from '@blackglory/types'
 import { stringifyTimeBasedId } from '@main/utils/create-id'
+import { INotification } from '@src/contract'
 
 let db: level.LevelDB<string, INotification> | undefined
 

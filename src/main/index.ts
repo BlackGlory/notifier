@@ -13,6 +13,7 @@ import * as DelightRPC from 'delight-rpc'
 import { Deferred } from 'extra-promise'
 import { initConfig } from './config'
 import { openDatabase } from './database'
+import { IAppRendererAPI, INotificationRendererAPI } from '@src/contract'
 
 go(async () => {
   setAutoReload(isDev)

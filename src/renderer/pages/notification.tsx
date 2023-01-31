@@ -4,6 +4,7 @@ import { MainAPIContext } from '@renderer/notification-context'
 import { useResizeObserver, useMount } from 'extra-react-hooks'
 import { useImmer } from 'use-immer'
 import { newNotificationObservable } from '@renderer/notification-context'
+import { INotification } from '@src/contract'
 
 export function NotificationPage() {
   const [notificationList, updateNotificationList] = useImmer<INotification[]>([])

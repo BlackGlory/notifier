@@ -16,6 +16,7 @@ import {
 , queryNotificationsById
 , queryNotificationsByTimestamp
 } from '@main/database'
+import { IAppMainAPI, IAppRendererAPI, INotificationRendererAPI } from '@src/contract'
 
 export function createAppMainAPI({ appRendererAPI, notificationRendererAPI }: {
   appRendererAPI: DelightRPC.ClientProxy<IAppRendererAPI>

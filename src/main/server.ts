@@ -8,6 +8,7 @@ import {
 import { getError, getSuccess } from 'return-style'
 import { createTimeBasedId, stringifyTimeBasedId } from '@main/utils/create-id'
 import { isArray } from '@blackglory/types'
+import { INotification } from '@src/contract'
 
 interface IServerOptions {
   notify: (notifications: INotification[]) => void

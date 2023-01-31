@@ -5,6 +5,7 @@ import { useMount } from 'extra-react-hooks'
 import { useContext } from 'react'
 import { MainAPIContext } from '@renderer/app-context'
 import { go } from '@blackglory/go'
+import { INotification } from '@src/contract'
 
 export function History() {
   const [notificationList, updateNotificationList] = useImmer<INotification[]>([])
