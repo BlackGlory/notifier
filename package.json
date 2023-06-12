@@ -52,6 +52,8 @@
     "electron": "^16.0.7",
     "electron-builder": "^22.14.5",
     "eslint": "8.20.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "extra-fetch": "^1.8.5",
     "extra-request": "^4.0.1",
     "husky": "^4.3.8",

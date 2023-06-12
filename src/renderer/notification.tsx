@@ -1,6 +1,6 @@
 import './styles.css'
 import ReactDOM from 'react-dom'
-import React from 'react'
+import { StrictMode } from 'react'
 import { NotificationPage } from './pages/notification'
 import { createServerInRenderer, createClientInRenderer } from '@delight-rpc/electron'
 import { MainAPIContext } from './notification-context'
@@ -16,11 +16,11 @@ renderReactPage(client)
 function renderReactPage(client: DelightRPC.ClientProxy<INotificationMainAPI>): void {
   const rootElement = document.querySelector('main')
   ReactDOM.render(
-    <React.StrictMode>
+    <StrictMode>
       <MainAPIContext.Provider value={client}>
         <NotificationPage />
       </MainAPIContext.Provider>
-    </React.StrictMode>
+    </StrictMode>
   , rootElement
   )
 }
