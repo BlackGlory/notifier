@@ -35,7 +35,7 @@ export function Notification(props: INotificationProps) {
             <img src={iconUrl} />
           </div>
         )}
-        <div className='flex-grow'>
+        <div className='flex-1'>
           <div className='flex flex-col justify-between min-h-20 p-1.5 pr-0 space-y-0.5'>
             {title && <h2 className='font-semibold'>{title}</h2>}
             {message && (
