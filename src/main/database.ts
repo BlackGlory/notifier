@@ -1,16 +1,17 @@
-import level from 'level'
+import { Level } from 'level'
+import { ValueStream, EntryStream } from 'level-read-stream'
 import { dropAsync, mapAsync, toArrayAsync } from 'iterable-operator'
 import { pipe } from 'extra-utils'
 import { assert, isUndefined } from '@blackglory/prelude'
 import { stringifyTimeBasedId } from '@main/utils/create-id.js'
 import { INotification } from '@src/contract.js'
 
-let db: level.LevelDB<string, INotification> | undefined
+let db: Level<string, INotification> | undefined
 
 export function openDatabase(filename = 'data'): void {
   if (db) throw new Error('Database is opened')
 
-  db = level(filename, {
+  db = new Level(filename, {
     valueEncoding: 'json'
   })
 }
@@ -36,7 +37,7 @@ export async function getAllNotifications(): Promise<INotification[]> {
   assert(db, 'Database is not opened')
   
   return await pipe(
-    db.createValueStream({ reverse: true })
+    new ValueStream(db, { reverse: true })
   , notifications => mapAsync(notifications, notification => notification as any as INotification)
   , toArrayAsync
   )
@@ -52,7 +53,7 @@ export async function queryNotificationsById(
   assert(db, 'Database is not opened')
 
   return await pipe(
-    db.createReadStream({
+    new EntryStream(db, {
       reverse: true
     , limit: limit + skip
     , lt: beforeThisId
@@ -73,7 +74,7 @@ export async function queryNotificationsByTimestamp(
   assert(db, 'Database is not opened')
 
   return await pipe(
-    db.createReadStream({
+    new EntryStream(db, {
       reverse: true
     , limit: limit + skip
     , lt: stringifyTimeBasedId([beforeThisTimestamp, 0])

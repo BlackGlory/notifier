@@ -1,12 +1,13 @@
 import './styles.css'
-import ReactDOM from 'react-dom'
 import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import { AppPage } from './pages/app.jsx'
 import { createServerInRenderer, createClientInRenderer } from '@delight-rpc/electron'
 import { MainAPIContext } from './app-context.js'
 import * as DelightRPC from 'delight-rpc'
 import { api } from './apis/app.js'
 import { IAppMainAPI } from '@src/contract.js'
+import { assert } from '@blackglory/prelude'
 
 startRPCServer()
 const [client] = createRPCClient()
@@ -14,14 +15,16 @@ client.ping()
 renderReactPage(client)
 
 function renderReactPage(client: DelightRPC.ClientProxy<IAppMainAPI>): void {
-  const rootElement = document.querySelector('main')
-  ReactDOM.render(
+  const main = document.querySelector('main')
+  assert(main)
+
+  const root = createRoot(main)
+  root.render(
     <StrictMode>
       <MainAPIContext.Provider value={client}>
         <AppPage />
       </MainAPIContext.Provider>
     </StrictMode>
-  , rootElement
   )
 }
 

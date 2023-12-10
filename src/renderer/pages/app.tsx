@@ -1,6 +1,6 @@
 import { Settings } from '@components/settings.jsx'
 import { History } from '@components/history.jsx'
-import { AdjustmentsIcon, ClockIcon } from '@heroicons/react/outline/index.js'
+import { AdjustmentsVerticalIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { Tab } from '@headlessui/react'
 import classNames from 'classnames'
 
@@ -13,7 +13,7 @@ export function AppPage() {
     {
       id: 'settings'
     , header: <>
-        <AdjustmentsIcon className='w-7 h-7' />
+        <AdjustmentsVerticalIcon className='w-7 h-7' />
         <span>Settings</span>
       </>
     , content: <Settings />

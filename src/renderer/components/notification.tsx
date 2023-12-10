@@ -1,7 +1,5 @@
-import 'simplebar/dist/simplebar.min.css'
 import classNames from 'classnames'
-import SimpleBar from 'simplebar-react'
-import { XIcon } from '@heroicons/react/solid/index.js'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 
 interface INotificationProps {
   title?: string
@@ -39,9 +37,9 @@ export function Notification(props: INotificationProps) {
           <div className='flex flex-col justify-between min-h-20 p-1.5 pr-0 space-y-0.5'>
             {title && <h2 className='font-semibold'>{title}</h2>}
             {message && (
-              <SimpleBar className='max-h-20 text-sm' timeout={300}>
+              <div className='max-h-20 text-sm'>
                 <span className='break-words leading-tight'>{message}</span>
-              </SimpleBar>
+              </div>
             )}
             <div className='flex-1' />
             {(date ?? senderId) && (
@@ -62,7 +60,7 @@ export function Notification(props: INotificationProps) {
               evt.stopPropagation()
               onCloseButtonClick()
             }}>
-              <XIcon className='w-4 h-4 text-gray-500' />
+              <XMarkIcon className='w-4 h-4 text-gray-500' />
             </button>
           </div>
         )}
