@@ -1,9 +1,9 @@
 import level from 'level'
-import { assert } from '@blackglory/errors'
-import { AsyncIterableOperator } from 'iterable-operator/lib/es2018/style/chaining'
-import { isUndefined } from '@blackglory/types'
-import { stringifyTimeBasedId } from '@main/utils/create-id'
-import { INotification } from '@src/contract'
+import { dropAsync, mapAsync, toArrayAsync } from 'iterable-operator'
+import { pipe } from 'extra-utils'
+import { assert, isUndefined } from '@blackglory/prelude'
+import { stringifyTimeBasedId } from '@main/utils/create-id.js'
+import { INotification } from '@src/contract.js'
 
 let db: level.LevelDB<string, INotification> | undefined
 
@@ -35,9 +35,11 @@ export async function addNotifications(notifications: INotification[]): Promise<
 export async function getAllNotifications(): Promise<INotification[]> {
   assert(db, 'Database is not opened')
   
-  return await new AsyncIterableOperator(db.createValueStream({ reverse: true }))
-    .mapAsync(notification => notification as any as INotification)
-    .toArrayAsync()
+  return await pipe(
+    db.createValueStream({ reverse: true })
+  , notifications => mapAsync(notifications, notification => notification as any as INotification)
+  , toArrayAsync
+  )
 }
 
 export async function queryNotificationsById(
@@ -49,14 +51,16 @@ export async function queryNotificationsById(
 ): Promise<INotification[]> {
   assert(db, 'Database is not opened')
 
-  return await new AsyncIterableOperator(db.createReadStream({
+  return await pipe(
+    db.createReadStream({
       reverse: true
     , limit: limit + skip
     , lt: beforeThisId
-    }))
-    .mapAsync(item => (item as any as { key: string, value: INotification }).value)
-    .dropAsync(skip)
-    .toArrayAsync()
+    })
+  , items => mapAsync(items, item => (item as any as { key: string, value: INotification }).value)
+  , notifications => dropAsync(notifications, skip)
+  , toArrayAsync
+  )
 }
 
 export async function queryNotificationsByTimestamp(
@@ -68,14 +72,16 @@ export async function queryNotificationsByTimestamp(
 ): Promise<INotification[]> {
   assert(db, 'Database is not opened')
 
-  return await new AsyncIterableOperator(db.createReadStream({
+  return await pipe(
+    db.createReadStream({
       reverse: true
     , limit: limit + skip
     , lt: stringifyTimeBasedId([beforeThisTimestamp, 0])
-    }))
-    .mapAsync(item => (item as any as { key: string, value: INotification }).value)
-    .dropAsync(skip)
-    .toArrayAsync()
+    })
+  , items => mapAsync(items, item => (item as any as { key: string, value: INotification }).value)
+  , notifications => dropAsync(notifications, skip)
+  , toArrayAsync
+  )
 }
 
 export async function deleteNotification(id: string): Promise<void> {

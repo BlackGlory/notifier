@@ -1,5 +1,5 @@
-import { newNotificationObservable } from '@renderer/notification-context'
-import { INotificationRendererAPI, INotification } from '@src/contract'
+import { newNotificationObservable } from '@renderer/notification-context.js'
+import { INotificationRendererAPI, INotification } from '@src/contract.js'
 
 export const api: INotificationRendererAPI = {
   ping() {

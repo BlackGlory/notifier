@@ -1,11 +1,11 @@
-import { Notification } from '@components/notification'
+import { Notification } from '@components/notification.jsx'
 import { useImmer } from 'use-immer'
-import { newNotificationObservable } from '@renderer/app-context'
+import { newNotificationObservable } from '@renderer/app-context.js'
 import { useMount } from 'extra-react-hooks'
 import { useContext } from 'react'
-import { MainAPIContext } from '@renderer/app-context'
-import { go } from '@blackglory/go'
-import { INotification } from '@src/contract'
+import { MainAPIContext } from '@renderer/app-context.js'
+import { go } from '@blackglory/prelude'
+import { INotification } from '@src/contract.js'
 
 export function History() {
   const [notificationList, updateNotificationList] = useImmer<INotification[]>([])

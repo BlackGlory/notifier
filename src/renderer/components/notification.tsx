@@ -1,7 +1,7 @@
 import 'simplebar/dist/simplebar.min.css'
 import classNames from 'classnames'
 import SimpleBar from 'simplebar-react'
-import { XIcon } from '@heroicons/react/solid'
+import { XIcon } from '@heroicons/react/solid/index.js'
 
 interface INotificationProps {
   title?: string

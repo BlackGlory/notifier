@@ -1,12 +1,12 @@
 import './styles.css'
 import ReactDOM from 'react-dom'
 import { StrictMode } from 'react'
-import { NotificationPage } from './pages/notification'
+import { NotificationPage } from './pages/notification.jsx'
 import { createServerInRenderer, createClientInRenderer } from '@delight-rpc/electron'
-import { MainAPIContext } from './notification-context'
+import { MainAPIContext } from './notification-context.js'
 import * as DelightRPC from 'delight-rpc'
-import { api } from './apis/notification'
-import { INotificationMainAPI } from '@src/contract'
+import { api } from './apis/notification.js'
+import { INotificationMainAPI } from '@src/contract.js'
 
 startRPCServer()
 const [client] = createRPCClient()

@@ -1,5 +1,6 @@
-import { stringifyTimeBasedId } from '@main/utils/create-id'
-import { assert } from '@blackglory/errors'
+import { describe, test, expect } from 'vitest'
+import { stringifyTimeBasedId } from '@main/utils/create-id.js'
+import { assert } from '@blackglory/prelude'
 
 describe('stringifyTimeBasedId([timestamp: number, num: number]): string', () => {
   test('compare', () => {

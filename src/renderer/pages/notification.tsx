@@ -1,10 +1,10 @@
 import { useRef, useContext, useLayoutEffect } from 'react'
-import { Notification } from '@components/notification'
-import { MainAPIContext } from '@renderer/notification-context'
+import { Notification } from '@components/notification.jsx'
+import { MainAPIContext } from '@renderer/notification-context.js'
 import { useResizeObserver, useMount } from 'extra-react-hooks'
 import { useImmer } from 'use-immer'
-import { newNotificationObservable } from '@renderer/notification-context'
-import { INotification } from '@src/contract'
+import { newNotificationObservable } from '@renderer/notification-context.js'
+import { INotification } from '@src/contract.js'
 
 export function NotificationPage() {
   const [notificationList, updateNotificationList] = useImmer<INotification[]>([])

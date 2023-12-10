@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach, afterEach } from 'vitest'
 import {
   openDatabase
 , closeDatabase
@@ -7,8 +8,8 @@ import {
 , deleteNotification
 , queryNotificationsById
 , queryNotificationsByTimestamp
-} from '@main/database'
-import { stringifyTimeBasedId } from '@main/utils/create-id'
+} from '@main/database.js'
+import { stringifyTimeBasedId } from '@main/utils/create-id.js'
 import { createTempNameSync, remove } from 'extra-filesystem'
 
 const filename = createTempNameSync()

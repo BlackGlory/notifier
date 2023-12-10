@@ -1,6 +1,6 @@
-import { Settings } from '@components/settings'
-import { History } from '@components/history'
-import { AdjustmentsIcon, ClockIcon } from '@heroicons/react/outline'
+import { Settings } from '@components/settings.jsx'
+import { History } from '@components/history.jsx'
+import { AdjustmentsIcon, ClockIcon } from '@heroicons/react/outline/index.js'
 import { Tab } from '@headlessui/react'
 import classNames from 'classnames'
 

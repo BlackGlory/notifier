@@ -1,7 +1,7 @@
 import * as http from 'http'
-import { createServer } from '@main/server'
+import { createServer } from '@main/server.js'
 import * as DelightRPC from 'delight-rpc'
-import { go } from '@blackglory/go'
+import { go } from '@blackglory/prelude'
 import {
   getServer
 , getSilentMode
@@ -9,14 +9,14 @@ import {
 , setSilentMode
 , setServerHostname
 , setServerPort
-} from '@main/config'
+} from '@main/config.js'
 import {
   addNotifications
 , deleteNotification
 , queryNotificationsById
 , queryNotificationsByTimestamp
-} from '@main/database'
-import { IAppMainAPI, IAppRendererAPI, INotificationRendererAPI } from '@src/contract'
+} from '@main/database.js'
+import { IAppMainAPI, IAppRendererAPI, INotificationRendererAPI } from '@src/contract.js'
 
 export function createAppMainAPI({ appRendererAPI, notificationRendererAPI }: {
   appRendererAPI: DelightRPC.ClientProxy<IAppRendererAPI>

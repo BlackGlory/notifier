@@ -1,3 +1,4 @@
+import { test, expect, beforeEach, afterEach } from 'vitest'
 import {
   initConfig
 , getServer
@@ -7,7 +8,7 @@ import {
 , resetConfig
 , setServerHostname
 , setServerPort
-} from '@main/config'
+} from '@main/config.js'
 import { createTempNameSync, remove } from 'extra-filesystem'
 
 const filename = createTempNameSync()

@@ -1,8 +1,8 @@
 import { useState, useContext } from 'react'
-import { MainAPIContext } from '@renderer/app-context'
+import { MainAPIContext } from '@renderer/app-context.js'
 import { Switch } from '@headlessui/react'
 import { useMount } from 'extra-react-hooks'
-import { go } from '@blackglory/go'
+import { go } from '@blackglory/prelude'
 import classNames from 'classnames'
 import { all } from 'extra-promise'
 

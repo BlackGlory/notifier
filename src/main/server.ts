@@ -1,14 +1,13 @@
 import * as http from 'http'
-import { RequestHandler, json, createError } from 'micro'
-import micro from 'micro'
+import { serve, RequestHandler, json, createError } from 'micro'
 import {
   validateUniversalNotification
 , UniversalNotification
 } from 'universal-notification'
 import { getError, getSuccess } from 'return-style'
-import { createTimeBasedId, stringifyTimeBasedId } from '@main/utils/create-id'
-import { isArray } from '@blackglory/types'
-import { INotification } from '@src/contract'
+import { createTimeBasedId, stringifyTimeBasedId } from '@main/utils/create-id.js'
+import { isArray } from '@blackglory/prelude'
+import { INotification } from '@src/contract.js'
 
 interface IServerOptions {
   notify: (notifications: INotification[]) => void
@@ -29,18 +28,22 @@ export function createServer({ notify }: IServerOptions): http.Server {
       } else {
         const err = getError(() => validateUniversalNotification(payload))
         if (err) {
-          throw createError(400, err.message)
+          throw createError(400, err.message, err)
         } else {
           notify([createNotificationFromUniversalNotification(payload, senderId)])
         }
       }
       return ''
     } else {
-      throw createError(400, 'The payload is not a valid JSON')
+      throw createError(
+        400
+      , 'The payload is not a valid JSON'
+      , new Error('The payload is not a valid JSON')
+      )
     }
   }
 
-  return new http.Server(micro(handler))
+  return new http.Server(serve(handler))
 }
 
 function createNotificationFromUniversalNotification(

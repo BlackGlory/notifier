@@ -14,12 +14,17 @@ module.exports = {
 , resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json']
   , plugins: [new TsconfigPathsPlugin()]
+  , extensionAlias: {
+      '.js': ['.js', '.ts']
+    , '.jsx': ['.jsx', '.tsx']
+    , '.cjs': ['.cjs', '.cts']
+    , '.mjs': ['.mjs', '.mts']
+    }
   }
 , module: {
     rules: [
       {
-        test: /\.tsx?$/
-      , exclude: /node_module/
+        test: /\.([cm]?ts|tsx)$/
       , use: 'ts-loader'
       }
     , {

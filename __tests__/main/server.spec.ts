@@ -1,12 +1,12 @@
-import { createServer } from '@main/server'
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
+import { createServer } from '@main/server.js'
 import { fetch } from 'extra-fetch'
 import { post } from 'extra-request'
-import { url, json, header } from 'extra-request/lib/es2018/transformers'
-import { assert } from '@blackglory/errors'
-import { isObject } from '@blackglory/types'
+import { url, json, header } from 'extra-request/transformers'
+import { assert, isObject } from '@blackglory/prelude'
 import { AddressInfo } from 'net'
 
-const fn: jest.Mock = jest.fn()
+const fn = vi.fn()
 let server: ReturnType<typeof createServer>
 let address: string
 
@@ -88,7 +88,7 @@ function getAddress() {
 
 async function startService(): Promise<string> {
   return await new Promise<string>(resolve => {
-      server.listen({ host: 'localhost', port: 0 }, () => {
+    server.listen({ host: 'localhost', port: 0 }, () => {
       const addressInfo = server.address()
       assert(isObject(addressInfo), 'addressInfo is not object')
 

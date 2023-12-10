@@ -1,12 +1,12 @@
 import './styles.css'
 import ReactDOM from 'react-dom'
 import { StrictMode } from 'react'
-import { AppPage } from './pages/app'
+import { AppPage } from './pages/app.jsx'
 import { createServerInRenderer, createClientInRenderer } from '@delight-rpc/electron'
-import { MainAPIContext } from './app-context'
+import { MainAPIContext } from './app-context.js'
 import * as DelightRPC from 'delight-rpc'
-import { api } from './apis/app'
-import { IAppMainAPI } from '@src/contract'
+import { api } from './apis/app.js'
+import { IAppMainAPI } from '@src/contract.js'
 
 startRPCServer()
 const [client] = createRPCClient()

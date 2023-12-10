@@ -1,5 +1,5 @@
 import { BrowserWindow, screen } from 'electron'
-import { INotificationMainAPI } from '@src/contract'
+import { INotificationMainAPI } from '@src/contract.js'
 
 export function createNotificationMainAPI(window: BrowserWindow): INotificationMainAPI {
   return {

@@ -1,8 +1,7 @@
 import { app, Tray, Menu, MenuItem, BrowserWindow } from 'electron'
-import { assert } from '@blackglory/errors'
-import { isUndefined } from '@blackglory/types'
+import { assert, isUndefined } from '@blackglory/prelude'
 import * as path from 'path'
-import { closeDatabase } from './database'
+import { closeDatabase } from './database.js'
 
 let tray: Tray | undefined // prevent GC
 
