@@ -13,7 +13,7 @@ export function createAppWindow(): {
   , minHeight: 500
   , resizable: true
   , webPreferences: {
-      preload: path.join(app.getAppPath(), 'lib/renderer/app-preload.js')
+      preload: path.join(app.getAppPath(), 'lib/renderer/app-preload.cjs')
     , devTools: isDev
     }
   })

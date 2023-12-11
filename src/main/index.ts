@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, session } from 'electron'
 import { go } from '@blackglory/prelude'
 import { setupTray } from './tray.js'
 import { createAppWindow } from '@windows/app.js'
@@ -14,6 +14,7 @@ import { Deferred } from 'extra-promise'
 import { initConfig } from './config.js'
 import { openDatabase } from './database.js'
 import { IAppRendererAPI, INotificationRendererAPI } from '@src/contract.js'
+import { fileURLToPath } from 'url'
 
 go(async () => {
   setAutoReload(isDev)
@@ -23,6 +24,16 @@ go(async () => {
   openDatabase()
 
   await app.whenReady()
+
+  // 为渲染器页面设置CSP header, 以消除相应的Electron警告.
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders
+      , 'Content-Security-Policy': [`default-src 'self' 'unsafe-inline'`]
+      }
+    })
+  })
 
   const {
     window: notificationWindow
@@ -75,7 +86,11 @@ go(async () => {
 
 function setAutoReload(value: boolean) {
   if (value) {
-    reloader(module, { watchRenderer: false })
+    const module: Partial<NodeModule> = {
+      filename: fileURLToPath(import.meta.url)
+    , children: []
+    }
+    reloader(module as NodeModule, { watchRenderer: false })
   }
 }
 
