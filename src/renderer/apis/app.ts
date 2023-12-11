@@ -1,11 +1,11 @@
 import { newNotificationObservable } from '@renderer/app-context.js'
-import { INotificationRendererAPI, INotification } from '@src/contract.js'
+import { INotificationRendererAPI } from '@src/contract.js'
 
 export const api: INotificationRendererAPI = {
   ping() {
     return 'pong'
   }
-, notify(notifications: INotification[]) {
+, notify(notifications) {
     newNotificationObservable.next(notifications)
   }
 }

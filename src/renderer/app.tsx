@@ -28,13 +28,16 @@ function renderReactPage(client: DelightRPC.ClientProxy<IAppMainAPI>): void {
   )
 }
 
-function createRPCClient() {
+function createRPCClient(): [
+  client: DelightRPC.ClientProxy<IAppMainAPI>
+, close: () => void
+] {
   const channel = new MessageChannel()
   channel.port1.start()
-  const client = createClientInRenderer<IAppMainAPI>(channel.port1)
+  const [client, close] = createClientInRenderer<IAppMainAPI>(channel.port1)
   window.postMessage('message-port-for-server', '*', [channel.port2])
 
-  return client
+  return [client, close]
 }
 
 function startRPCServer(): void {

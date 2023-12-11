@@ -5,7 +5,7 @@ import { closeDatabase } from './database.js'
 
 let tray: Tray | undefined // prevent GC
 
-export function setupTray(appWindow: BrowserWindow) {
+export function setupTray(appWindow: BrowserWindow): void {
   assert(isUndefined(tray), 'Tray is already setup')
 
   tray = new Tray(path.join(app.getAppPath(), 'public/icon.png'))
@@ -25,7 +25,7 @@ export function setupTray(appWindow: BrowserWindow) {
     const quit = new MenuItem({
       type: 'normal'
     , label: 'Quit'
-    , click() {
+    , click(): void {
         closeDatabase()
         app.exit()
       }

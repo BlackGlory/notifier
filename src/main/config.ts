@@ -10,7 +10,7 @@ interface IConfigV0_1_0 {
 
 let store: Store<IConfigV0_1_0>
 
-export function initConfig(filename?: string) {
+export function initConfig(filename?: string): void {
   store = new Store<IConfigV0_1_0>({
     cwd: filename
   , accessPropertiesByDotNotation: false
