@@ -25,15 +25,7 @@ go(async () => {
 
   await app.whenReady()
 
-  // 为渲染器页面设置CSP header, 以消除相应的Electron警告.
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders
-      , 'Content-Security-Policy': [`default-src 'self' 'unsafe-inline'`]
-      }
-    })
-  })
+  setCSPHeader()
 
   const {
     window: notificationWindow
@@ -84,8 +76,8 @@ go(async () => {
   await loadAppWindow()
 })
 
-function setAutoReload(value: boolean) {
-  if (value) {
+function setAutoReload(enabled: boolean): void {
+  if (enabled) {
     // https://github.com/sindresorhus/electron-reloader/issues/31
     const module: Partial<NodeModule> = {
       filename: fileURLToPath(import.meta.url)
@@ -95,7 +87,21 @@ function setAutoReload(value: boolean) {
   }
 }
 
-function preventMultipleInstances() {
+function preventMultipleInstances(): void {
   const gotTheLock = app.requestSingleInstanceLock()
   if (!gotTheLock) app.exit()
+}
+
+/**
+ * 为渲染器页面设置CSP header, 以消除相应的Electron警告.
+ */
+function setCSPHeader(): void {
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders
+      , 'Content-Security-Policy': [`default-src 'self' 'unsafe-inline'`]
+      }
+    })
+  })
 }
