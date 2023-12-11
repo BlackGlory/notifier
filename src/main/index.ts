@@ -86,6 +86,7 @@ go(async () => {
 
 function setAutoReload(value: boolean) {
   if (value) {
+    // https://github.com/sindresorhus/electron-reloader/issues/31
     const module: Partial<NodeModule> = {
       filename: fileURLToPath(import.meta.url)
     , children: []
