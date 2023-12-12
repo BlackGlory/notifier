@@ -5,10 +5,10 @@ import { useMount } from 'extra-react-hooks'
 import { useContext } from 'react'
 import { MainAPIContext } from '@renderer/app-context.js'
 import { go } from '@blackglory/prelude'
-import { INotification } from '@src/contract.js'
+import { INotificationRecord } from '@src/contract.js'
 
 export function History() {
-  const [notificationList, updateNotificationList] = useImmer<INotification[]>([])
+  const [notificationList, updateNotificationList] = useImmer<INotificationRecord[]>([])
   const mainAPI = useContext(MainAPIContext)
 
   useMount(() => {
@@ -37,14 +37,13 @@ export function History() {
   return (
     <div className='mx-auto max-w-[24rem] m-5 space-y-1'>
       {Array.from(notificationList).map(notification => (
-        <Notification 
+        <Notification
           key={notification.id}
           title={notification.title}
           message={notification.message}
           iconUrl={notification.iconUrl}
           imageUrl={notification.imageUrl}
           timestamp={notification.timestamp}
-          senderId={notification.senderId}
           onClick={
             notification.url
             ? () => {

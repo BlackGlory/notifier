@@ -1,62 +1,26 @@
-import * as http from 'http'
-import { serve, RequestHandler, json, createError } from 'micro'
-import {
-  validateUniversalNotification
-, UniversalNotification
-} from 'universal-notification'
-import { getError, getSuccess } from 'return-style'
-import { createTimeBasedId, stringifyTimeBasedId } from '@main/utils/create-id.js'
-import { isArray } from '@blackglory/prelude'
-import { INotification } from '@src/contract.js'
+import fastify, { FastifyInstance } from 'fastify'
+import cors from '@fastify/cors'
+import { routes as health } from './services/health.js'
+import { routes as notifier } from './services/notifier.js'
+import { IServerAPI } from '@src/contract.js'
 
-interface IServerOptions {
-  notify: (notifications: INotification[]) => void
-}
-
-export function createServer({ notify }: IServerOptions): http.Server {
-  const handler: RequestHandler = async req => {
-    if (req.url === '/health') return 'OK'
-
-    const senderId = req.headers['x-sender-id'] as string | undefined
-    const payload = await json(req)
-    if (payload) {
-      if (isArray<INotification>(payload)) {
-        const notifications = payload
-          .filter(x => getSuccess(() => validateUniversalNotification(x)))
-          .map(x => createNotificationFromUniversalNotification(x, senderId))
-        notify(notifications)
-      } else {
-        const err = getError(() => validateUniversalNotification(payload))
-        if (err) {
-          throw createError(400, err.message, err)
-        } else {
-          notify([createNotificationFromUniversalNotification(payload, senderId)])
-        }
+export async function buildServer(api: IServerAPI): Promise<FastifyInstance> {
+  const server = fastify({
+    forceCloseConnections: true
+  , ajv: {
+      customOptions: {
+        coerceTypes: false
       }
-      return ''
-    } else {
-      throw createError(
-        400
-      , 'The payload is not a valid JSON'
-      , new Error('The payload is not a valid JSON')
-      )
     }
-  }
+  })
 
-  return new http.Server(serve(handler))
-}
+  server.addHook('onRequest', async (req, reply) => {
+    reply.header('Cache-Control', 'private, no-cache')
+  })
 
-function createNotificationFromUniversalNotification(
-  notification: UniversalNotification
-, senderId?: string
-): INotification {
-  const [timestamp, num] = createTimeBasedId()
-  const id = stringifyTimeBasedId([timestamp, num])
+  await server.register(cors, { origin: true })
+  await server.register(notifier, api)
+  await server.register(health)
 
-  return {
-    ...notification
-  , id
-  , senderId
-  , timestamp
-  }
+  return server
 }

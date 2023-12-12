@@ -4,9 +4,9 @@ import { dropAsync, mapAsync, toArrayAsync } from 'iterable-operator'
 import { pipe } from 'extra-utils'
 import { assert, isUndefined } from '@blackglory/prelude'
 import { stringifyTimeBasedId } from '@main/utils/create-id.js'
-import { INotification } from '@src/contract.js'
+import { INotificationRecord } from '@src/contract.js'
 
-let db: Level<string, INotification> | undefined
+let db: Level<string, INotificationRecord> | undefined
 
 export function openDatabase(filename = 'data'): void {
   if (db) throw new Error('Database is opened')
@@ -23,7 +23,7 @@ export async function closeDatabase(): Promise<void> {
   db = undefined
 }
 
-export async function addNotifications(notifications: INotification[]): Promise<void> {
+export async function addNotifications(notifications: INotificationRecord[]): Promise<void> {
   assert(db, 'Database is not opened')
 
   await db.batch(notifications.map(notification => ({
@@ -33,12 +33,12 @@ export async function addNotifications(notifications: INotification[]): Promise<
   })))
 }
 
-export async function getAllNotifications(): Promise<INotification[]> {
+export async function getAllNotifications(): Promise<INotificationRecord[]> {
   assert(db, 'Database is not opened')
   
   return await pipe(
     new ValueStream(db, { reverse: true })
-  , notifications => mapAsync(notifications, notification => notification as any as INotification)
+  , notifications => mapAsync(notifications, notification => notification as any as INotificationRecord)
   , toArrayAsync
   )
 }
@@ -49,7 +49,7 @@ export async function queryNotificationsById(
     limit: number
   , skip?: number
   }
-): Promise<INotification[]> {
+): Promise<INotificationRecord[]> {
   assert(db, 'Database is not opened')
 
   return await pipe(
@@ -58,7 +58,7 @@ export async function queryNotificationsById(
     , limit: limit + skip
     , lt: beforeThisId
     })
-  , items => mapAsync(items, item => (item as any as { key: string, value: INotification }).value)
+  , items => mapAsync(items, item => (item as any as { key: string, value: INotificationRecord }).value)
   , notifications => dropAsync(notifications, skip)
   , toArrayAsync
   )
@@ -70,7 +70,7 @@ export async function queryNotificationsByTimestamp(
     limit: number
   , skip?: number
   }
-): Promise<INotification[]> {
+): Promise<INotificationRecord[]> {
   assert(db, 'Database is not opened')
 
   return await pipe(
@@ -79,7 +79,7 @@ export async function queryNotificationsByTimestamp(
     , limit: limit + skip
     , lt: stringifyTimeBasedId([beforeThisTimestamp, 0])
     })
-  , items => mapAsync(items, item => (item as any as { key: string, value: INotification }).value)
+  , items => mapAsync(items, item => (item as any as { key: string, value: INotificationRecord }).value)
   , notifications => dropAsync(notifications, skip)
   , toArrayAsync
   )

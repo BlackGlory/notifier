@@ -7,17 +7,13 @@ interface INotificationProps {
   iconUrl?: string
   imageUrl?: string
   timestamp?: number
-  senderId?: string
 
   onClick?: () => void
   onCloseButtonClick?: () => void
 }
 
 export function Notification(props: INotificationProps) {
-  const {
-    title, message, iconUrl, imageUrl, timestamp, senderId
-  , onClick, onCloseButtonClick
-  } = props
+  const { title, message, iconUrl, imageUrl, timestamp, onClick, onCloseButtonClick } = props
   const date = timestamp ? new Date(timestamp) : undefined
 
   return (
@@ -42,14 +38,13 @@ export function Notification(props: INotificationProps) {
               </div>
             )}
             <div className='flex-1' />
-            {(date ?? senderId) && (
+            {date && (
               <p className='text-sm text-gray-400 space-x-1'>
                 {date && (
                   <time dateTime={date.toISOString()} title={date.toLocaleString()}>
                     {date.toLocaleTimeString()}
                   </time>
                 )}
-                {senderId && <span>{senderId}</span>}
               </p>
             )}
           </div>

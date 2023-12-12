@@ -4,10 +4,10 @@ import { MainAPIContext } from '@renderer/notification-context.js'
 import { useResizeObserver, useMount } from 'extra-react-hooks'
 import { useImmer } from 'use-immer'
 import { newNotificationObservable } from '@renderer/notification-context.js'
-import { INotification } from '@src/contract.js'
+import { INotificationRecord } from '@src/contract.js'
 
 export function NotificationPage() {
-  const [notificationList, updateNotificationList] = useImmer<INotification[]>([])
+  const [notificationList, updateNotificationList] = useImmer<INotificationRecord[]>([])
   const mainAPI = useContext(MainAPIContext)
   const container = useRef<HTMLDivElement>(null)
 
@@ -32,14 +32,13 @@ export function NotificationPage() {
   return (
     <div ref={container} className='min-w-[24rem] space-y-1'>
       {Array.from(notificationList).reverse().map(notification => (
-        <Notification 
+        <Notification
           key={notification.id}
           title={notification.title}
           message={notification.message}
           iconUrl={notification.iconUrl}
           imageUrl={notification.imageUrl}
           timestamp={notification.timestamp}
-          senderId={notification.senderId}
           onClick={
             notification.url
             ? () => {

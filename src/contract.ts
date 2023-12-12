@@ -21,7 +21,7 @@ export interface IAppMainAPI {
   }
 
   Database: {
-    addNotifications(notifications: INotification[]): Promise<void> 
+    addNotifications(notifications: INotificationRecord[]): Promise<void> 
     deleteNotification(id: string): Promise<void>
     queryNotificationsById(
       beforeThisId: string
@@ -29,14 +29,14 @@ export interface IAppMainAPI {
         limit: number
       , skip?: number
       }
-    ): Promise<INotification[]>
+    ): Promise<INotificationRecord[]>
     queryNotificationsByTimestamp(
       beforeThisTimestamp: number 
     , options: {
         limit: number
       , skip?: number
       }
-    ): Promise<INotification[]>
+    ): Promise<INotificationRecord[]>
   }
 }
 
@@ -47,21 +47,33 @@ export interface INotificationMainAPI {
 
 export interface INotificationRendererAPI{
   ping(): string
-  notify(notifications: INotification[]): void
+  notify(notifications: INotificationRecord[]): void
 }
 
 export interface IAppRendererAPI {
   ping(): string
-  notify(notifications: INotification[]): void
+  notify(notifications: INotificationRecord[]): void
 }
 
-export interface INotification {
+export interface INotificationRecord {
   id: string
   timestamp: number
+
   title?: string
   message?: string
   iconUrl?: string
   imageUrl?: string
   url?: string
-  senderId?: string
+}
+
+export interface IServerAPI {
+  notify: (notifications: INotification[]) => void
+}
+
+export interface INotification {
+  title?: string | null
+  message?: string | null
+  iconUrl?: string | null
+  imageUrl?: string | null
+  url?: string | null
 }

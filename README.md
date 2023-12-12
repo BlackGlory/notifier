@@ -1,23 +1,26 @@
-# unotifier-desktop
-## 动机
-该项目通过Electron为桌面平台提供一致的通知功能, 因为桌面操作系统的原生通知功能大多难以使用:
-- 不同平台支持的通知功能特性不同, 使得跨平台的API接口难以建立.
-- 一些平台存在着严重影响交互性的差异.
-- 一些桌面环境没有实现通知.
-
-## 原理
-unotifier-desktop创建一个HTTP API服务器, 其他程序通过向服务器发送请求来发出通知.
+# Notifier
+该项目通过Electron为桌面平台提供一致的通知功能.
+Notifier创建一个本地的HTTP API服务器, 其他本地程序可以通过向服务器发送请求来发出通知.
 
 ## API
 ### notify
 `POST /`
 
-发出通知.
+向Notifier发出通知.
 
-要求payload是一个合法的由JSON表示的[UniversalNotification]对象或[UniversalNotification]数组.
-通知的发出者可以通过可选的请求头`X-Sender-Id`表明自己的身份.
+请求的payload必须是以JSON表示的INotification对象或INotification数组:
+```ts
+interface INotification {
+  title?: string | null
+  message?: string | null
+  iconUrl?: string | null
+  imageUrl?: string | null
+  url?: string | null
 
-[UniversalNotification]: https://github.com/UniversalNotification/spec
+  // 其他成员将被Notifier忽略
+  [name: string]: JSONValue
+}
+```
 
 ## 开发
 ```sh
