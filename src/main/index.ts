@@ -3,8 +3,6 @@ import { go } from '@blackglory/prelude'
 import { setupTray } from './tray.js'
 import { createAppWindow } from '@windows/app.js'
 import { createNotificationWindow } from '@windows/notification.js'
-import reloader from 'electron-reloader'
-import isDev from 'electron-is-dev'
 import { createClientInMain } from '@delight-rpc/electron'
 import { createServerInMain } from '@delight-rpc/electron'
 import { createAppMainAPI } from './apis/app.js'
@@ -14,10 +12,8 @@ import { Deferred } from 'extra-promise'
 import { initConfig } from './config.js'
 import { openDatabase } from './database.js'
 import { IAppRendererAPI, INotificationRendererAPI } from '@src/contract.js'
-import { fileURLToPath } from 'url'
 
 go(async () => {
-  setAutoReload(isDev)
   preventMultipleInstances()
 
   initConfig()
@@ -75,17 +71,6 @@ go(async () => {
   await loadNotificationWindow()
   await loadAppWindow()
 })
-
-function setAutoReload(enabled: boolean): void {
-  if (enabled) {
-    // https://github.com/sindresorhus/electron-reloader/issues/31
-    const module: Partial<NodeModule> = {
-      filename: fileURLToPath(import.meta.url)
-    , children: []
-    }
-    reloader(module as NodeModule, { watchRenderer: false })
-  }
-}
 
 function preventMultipleInstances(): void {
   const gotTheLock = app.requestSingleInstanceLock()
