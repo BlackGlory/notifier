@@ -9,7 +9,7 @@ export function setupTray(appWindow: BrowserWindow): void {
   assert(isUndefined(tray), 'Tray is already setup')
 
   tray = new Tray(path.join(app.getAppPath(), 'public/icon.png'))
-  tray.setToolTip('Unotifier')
+  tray.setToolTip('Notifier')
   tray.addListener('click', showAppWindow)
   tray.setContextMenu(createContextMenu())
 

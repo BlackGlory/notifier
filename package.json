@@ -1,9 +1,9 @@
 {
   "private": true,
   "version": "0.1.1",
-  "name": "unotifier-desktop",
+  "name": "notifier",
   "description": "",
-  "repository": "git@github.com:UniversalNotification/unotifier-desktop.git",
+  "repository": "git@github.com:BlackGlory/notifier.git",
   "author": "BlackGlory <woshenmedoubuzhidao@blackglory.me>",
   "license": "MIT",
   "main": "lib/main/index.js",
