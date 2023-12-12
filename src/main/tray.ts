@@ -19,18 +19,6 @@ export function setupTray(appWindow: BrowserWindow): void {
     , label: 'Show'
     , click: showAppWindow
     })
-    const launchAtStartup = new MenuItem({
-      type: 'checkbox'
-    , label: 'Launch at startup'
-    , click(menuItem) {
-        app.setLoginItemSettings({
-          openAtLogin: menuItem.checked
-        , openAsHidden: true
-        , args: ['--hidden']
-        })
-      }
-    , checked: app.getLoginItemSettings().openAtLogin
-    })
     const quit = new MenuItem({
       type: 'normal'
     , label: 'Quit'
@@ -45,8 +33,6 @@ export function setupTray(appWindow: BrowserWindow): void {
 
     const contextMenu = new Menu()
     contextMenu.append(show)
-    contextMenu.append(separator)
-    contextMenu.append(launchAtStartup)
     contextMenu.append(separator)
     contextMenu.append(quit)
 
