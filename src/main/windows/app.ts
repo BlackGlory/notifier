@@ -12,6 +12,10 @@ export function createAppWindow(): {
   , minWidth: 600
   , minHeight: 500
   , resizable: true
+  , show: !(
+      app.getLoginItemSettings().wasOpenedAsHidden ||
+      app.commandLine.hasSwitch('hidden')
+    )
   , webPreferences: {
       preload: path.join(app.getAppPath(), 'lib/renderer/app-preload.cjs')
     , devTools: isDev
