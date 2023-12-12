@@ -28,7 +28,7 @@ describe('buildServer', () => {
     expect(await res.text()).toBe('OK')
   })
 
-  describe('notifier', () => {
+  describe('notify', () => {
     test('notification', async () => {
       const res = await fetch(post(
         url(getAddress())

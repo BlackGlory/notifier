@@ -1,7 +1,7 @@
 import fastify, { FastifyInstance } from 'fastify'
 import cors from '@fastify/cors'
 import { routes as health } from './services/health.js'
-import { routes as notifier } from './services/notifier.js'
+import { routes as notify } from './services/notify.js'
 import { IServerAPI } from '@src/contract.js'
 
 export async function buildServer(api: IServerAPI): Promise<FastifyInstance> {
@@ -19,7 +19,7 @@ export async function buildServer(api: IServerAPI): Promise<FastifyInstance> {
   })
 
   await server.register(cors, { origin: true })
-  await server.register(notifier, api)
+  await server.register(notify, api)
   await server.register(health)
 
   return server
