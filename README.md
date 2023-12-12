@@ -22,6 +22,25 @@ interface INotification {
 }
 ```
 
+#### Example
+curl
+```sh
+curl \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{ "message": "Hello World" }' \
+  "http://localhost:8080"
+```
+
+JavaScript
+```ts
+await fetch('http://localhost:8080', {
+  method: 'POST'
+, headers: { 'Content-Type': 'application/json' }
+, body: JSON.stringify({ message: 'hello world' })
+})
+```
+
 ## 开发
 ```sh
 # 在第一个终端里运行
