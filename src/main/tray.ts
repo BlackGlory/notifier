@@ -1,14 +1,14 @@
 import { app, Tray, Menu, MenuItem, BrowserWindow } from 'electron'
 import { assert, isUndefined } from '@blackglory/prelude'
-import * as path from 'path'
 import { closeDatabase } from './database.js'
+import { getResourcePath } from '@main/utils/paths.js'
 
 let tray: Tray | undefined // prevent GC
 
 export function setupTray(appWindow: BrowserWindow): void {
   assert(isUndefined(tray), 'Tray is already setup')
 
-  tray = new Tray(path.join(app.getAppPath(), 'public/icon.png'))
+  tray = new Tray(getResourcePath('public/icon.png'))
   tray.setToolTip('Notifier')
   tray.addListener('click', showAppWindow)
   tray.setContextMenu(createContextMenu())

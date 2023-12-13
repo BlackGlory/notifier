@@ -5,10 +5,11 @@ import { pipe } from 'extra-utils'
 import { assert, isUndefined } from '@blackglory/prelude'
 import { stringifyTimeBasedId } from '@main/utils/create-id.js'
 import { INotificationRecord } from '@src/contract.js'
+import { getDataPath } from '@main/utils/paths.js'
 
 let db: Level<string, INotificationRecord> | undefined
 
-export function openDatabase(filename = 'data'): void {
+export function openDatabase(filename: string = getDataPath('data')): void {
   if (db) throw new Error('Database is opened')
 
   db = new Level(filename, {

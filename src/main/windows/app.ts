@@ -1,6 +1,6 @@
-import * as path from 'path'
 import { app, BrowserWindow, shell } from 'electron'
-import isDev from 'electron-is-dev'
+import { isDev } from '@main/utils/is-dev.js'
+import { getResourcePath } from '@main/utils/paths.js'
 
 export function createAppWindow(): {
   window: BrowserWindow
@@ -17,8 +17,8 @@ export function createAppWindow(): {
       app.commandLine.hasSwitch('hidden')
     )
   , webPreferences: {
-      preload: path.join(app.getAppPath(), 'lib/renderer/app-preload.cjs')
-    , devTools: isDev
+      preload: getResourcePath('lib/renderer/app-preload.cjs')
+    , devTools: isDev()
     }
   })
 
@@ -40,12 +40,12 @@ export function createAppWindow(): {
     window
   , async load() {
       await window.loadURL(
-        isDev
+        isDev()
         ? 'http://localhost:8080/app.html'
-        : `file://${path.join(app.getAppPath(), 'dist/app.html')}`
+        : `file://${getResourcePath('dist/app.html')}`
       )
 
-      if (isDev) {
+      if (isDev()) {
         window.webContents.openDevTools({ mode: 'detach' })
       }
     }

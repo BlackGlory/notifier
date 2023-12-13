@@ -1,6 +1,6 @@
-import * as path from 'path'
-import { app, BrowserWindow, shell } from 'electron'
-import isDev from 'electron-is-dev'
+import { BrowserWindow, shell } from 'electron'
+import { isDev } from '@main/utils/is-dev.js'
+import { getResourcePath } from '@main/utils/paths.js'
 
 export function createNotificationWindow(): {
   window: BrowserWindow
@@ -18,8 +18,8 @@ export function createNotificationWindow(): {
   , fullscreenable: false
   , focusable: false
   , webPreferences: {
-      preload: path.join(app.getAppPath(), 'lib/renderer/notification-preload.cjs')
-    , devTools: isDev
+      preload: getResourcePath('lib/renderer/notification-preload.cjs')
+    , devTools: isDev()
     }
   })
 
@@ -33,12 +33,12 @@ export function createNotificationWindow(): {
     window
   , async load() {
       await window.loadURL(
-        isDev
+        isDev()
         ? 'http://localhost:8080/notification.html'
-        : `file://${path.join(app.getAppPath(), 'dist/notification.html')}`
+        : `file://${getResourcePath('dist/notification.html')}`
       )
 
-      if (isDev) {
+      if (isDev()) {
         window.webContents.openDevTools({ mode: 'detach' })
       }
     }

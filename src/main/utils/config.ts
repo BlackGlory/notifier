@@ -1,6 +1,7 @@
 import { IConfig } from '@src/contract.js'
 import { pathExists, readJSONFile, writeJSONFile } from 'extra-filesystem'
 import { isUndefined } from 'extra-utils'
+import { getDataPath } from '@main/utils/paths.js'
 
 export const initialConfig: IConfig = {
   server: {
@@ -13,7 +14,9 @@ export const initialConfig: IConfig = {
 export class Config {
   private store: IConfig | undefined
 
-  constructor(private filename: string = 'config.json') {}
+  constructor(
+    private filename: string = getDataPath('config.json')
+  ) {}
 
   async set(config: IConfig): Promise<void> {
     this.store = structuredClone(config)
