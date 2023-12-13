@@ -1,57 +1,66 @@
 import { useState, useContext } from 'react'
 import { MainAPIContext } from '@renderer/app-context.js'
 import { Switch } from '@headlessui/react'
-import { useMount } from 'extra-react-hooks'
-import { go } from '@blackglory/prelude'
-import classNames from 'classnames'
-import { all } from 'extra-promise'
+import { useEffectAsync, useMountAsync } from 'extra-react-hooks'
+import { useSelector, useUpdater } from 'extra-react-store'
+import { ConfigStore, ConfigStoreContext } from '@renderer/utils/config-store.js'
+import { Loading } from '@components/loading.jsx'
 
 export function Settings() {
   const mainAPI = useContext(MainAPIContext)
-  const [isLoaded, setIsLoaded] = useState<boolean>(false)
-  const [isServerRunning, setIsServerRunning] = useState<boolean>(false)
-  const [serverHostname, setServerHostname] = useState<string>('localhost')
-  const [serverPort, setServerPort] = useState<number>(8080)
-  const [silentMode, setSilentMode] = useState<boolean>(false)
+  const [store, setStore] = useState<ConfigStore>()
 
-  useMount(() => {
-    go(async () => {
-      const { server, silentMode, isServerRunning } = await all({
-        isServerRunning: mainAPI.Server.isServerRunning()
-      , silentMode: mainAPI.Config.getSilentMode()
-      , server: mainAPI.Config.getServer()
-      })
-      
-      setServerHostname(server.hostname)
-      setServerPort(server.port)
-      setSilentMode(silentMode)
-      setIsServerRunning(isServerRunning)
-      setIsLoaded(true)
-    })
+  useEffectAsync(async () => {
+    const config = await mainAPI.Config.get()
+    setStore(new ConfigStore(mainAPI, config))
+  }, [])
+
+  return store
+       ? (
+           <ConfigStoreContext.Provider value={store}>
+             <Config />
+           </ConfigStoreContext.Provider>
+         )
+       : <Loading />
+}
+
+function Config() {
+  const mainAPI = useContext(MainAPIContext)
+  const config = useSelector(ConfigStoreContext, state => state)
+  const updateConfig = useUpdater(ConfigStoreContext)
+  const [isServerRunning, setIsServerRunning] = useState<boolean>(false)
+
+  useMountAsync(async () => {
+    const isServerRunning = await mainAPI.Server.isServerRunning()
+    setIsServerRunning(isServerRunning)
   })
 
   return (
-    <div className={classNames('m-5', { 'hidden': !isLoaded })}>
+    <div className='m-5'>
       <Headline>HTTP Server</Headline>
       <div className='space-y-4'>
         <div className='max-w-md grid grid-cols-4 gap-y-2 gap-x-2 items-center'>
           <label className=''>Hostname</label>
           <input type='text' className='px-1 py-0.5 border col-span-3'
-            value={serverHostname}
-            onChange={async event => {
+            disabled={isServerRunning}
+            value={config.server.hostname}
+            onChange={event => {
               const hostname = event.target.value
-              setServerHostname(hostname)
-              await mainAPI.Config.setServerHostname(hostname)
+              updateConfig(config => {
+                config.server.hostname = hostname
+              })
             }}
           />
 
           <label className=''>Port</label>
           <input type='number' className='p-1 py-0.5 border col-span-3'
-            value={serverPort}
-            onChange={async event => {
+            disabled={isServerRunning}
+            value={config.server.port}
+            onChange={event => {
               const port = event.target.valueAsNumber
-              setServerPort(port)
-              await mainAPI.Config.setServerPort(port)
+              updateConfig(config => {
+                config.server.port = port
+              })
             }}
           />
         </div>
@@ -62,13 +71,13 @@ export function Settings() {
           </div>
           <Switch
             checked={isServerRunning}
-            onChange={async on => {
-              if (on) {
-                await mainAPI.Server.startServer(serverHostname, serverPort)
+            onChange={async enabled => {
+              if (enabled) {
+                await mainAPI.Server.startServer(config.server.hostname, config.server.port)
               } else {
                 await mainAPI.Server.stopServer()
               }
-              setIsServerRunning(on)
+              setIsServerRunning(enabled)
             }}
             className={'bg-gray-300 py-1 px-2'}
           >
@@ -82,17 +91,18 @@ export function Settings() {
       <Headline>Silent Mode</Headline>
       <div>
         <div className='space-y-2'>
-          <div>{`Silent Mode: ${silentMode ? 'On' : 'Off'}`}</div>
+          <div>{`Silent Mode: ${config.silentMode ? 'On' : 'Off'}`}</div>
           <Switch
-            checked={silentMode}
-            onChange={async value => {
-              setSilentMode(value)
-              await mainAPI.Config.setSilentMode(value)
+            checked={config.silentMode}
+            onChange={value => {
+              updateConfig(config => {
+                config.silentMode = value
+              })
             }}
             className={'bg-gray-300 py-1 px-2'}
           >
             <span>
-              {silentMode ? 'Turn Off' : 'Turn On'}
+              {config.silentMode ? 'Turn Off' : 'Turn On'}
             </span>
           </Switch>
         </div>

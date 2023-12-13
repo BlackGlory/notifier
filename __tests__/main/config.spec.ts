@@ -1,81 +1,52 @@
-import { test, expect, beforeEach, afterEach } from 'vitest'
-import {
-  initConfig
-, getServer
-, setServer
-, getSilentMode
-, setSilentMode
-, resetConfig
-, setServerHostname
-, setServerPort
-} from '@main/config.js'
-import { createTempNameSync, remove } from 'extra-filesystem'
+import { describe, test, expect, afterEach } from 'vitest'
+import { Config, initialConfig } from '@main/utils/config.js'
+import { createTempFile, remove } from 'extra-filesystem'
 
-const filename = createTempNameSync()
-beforeEach(() => {
-  initConfig(filename)
-})
+const filename = await createTempFile()
 afterEach(async () => {
   await remove(filename)
 })
 
-test('getServer(): { hostname: string; port: number }', () => {
-  const result = getServer()
+describe('Config', () => {
+  test('get', async () => {
+    const config = new Config()
 
-  expect(result).toStrictEqual({
-    hostname: 'localhost'
-  , port: 8080
+    const result = await config.get()
+
+    expect(result).toStrictEqual(initialConfig)
   })
-})
 
-test('setServer(hostname: string, port: number): void', () => {
-  setServer('0.0.0.0', 1080)
+  test('set', async () => {
+    const config = new Config()
+    await config.set({
+      server: {
+        hostname: '0.0.0.0'
+      , port: 1080
+      }
+    , silentMode: true
+    })
 
-  expect(getServer()).toStrictEqual({
-    hostname: '0.0.0.0'
-  , port: 1080
+    expect(await config.get()).toStrictEqual({
+      server: {
+        hostname: '0.0.0.0'
+      , port: 1080
+      }
+    , silentMode: true
+    })
   })
-})
 
-test('setServerHostname(hostname: string): void', () => {
-  setServerHostname('0.0.0.0')
+  test('reset', async () => {
+    const config = new Config()
+    await config.set({
+      server: {
+        hostname: '0.0.0.0'
+      , port: 1080
+      }
+    , silentMode: true
+    })
 
-  expect(getServer()).toStrictEqual({
-    hostname: '0.0.0.0'
-  , port: 8080
+    await config.reset()
+
+    expect(await config.get()).toStrictEqual(initialConfig)
   })
-})
-
-test('setServerPort(port: number): void', () => {
-  setServerPort(1080)
-
-  expect(getServer()).toStrictEqual({
-    hostname: 'localhost'
-  , port: 1080
-  })
-})
-
-test('getSilentMode(): boolean', () => {
-  const result = getSilentMode()
-
-  expect(result).toBe(false)
-})
-
-test('setSilentMode(value: boolean): void', () => {
-  setSilentMode(true)
-
-  expect(getSilentMode()).toBe(true)
-})
-
-test('resetConfig(): void', () => {
-  setServer('0.0.0.0', 1080)
-  setSilentMode(true)
-
-  resetConfig()
-
-  expect(getServer()).toStrictEqual({
-    hostname: 'localhost'
-  , port: 8080
-  })
-  expect(getSilentMode()).toBe(false)
 })

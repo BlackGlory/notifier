@@ -1,3 +1,11 @@
+export interface IConfig {
+  server: {
+    hostname: string
+    port: number
+  }
+, silentMode: boolean
+}
+
 export interface IAppMainAPI {
   ping(): string
 
@@ -8,16 +16,8 @@ export interface IAppMainAPI {
   }
 
   Config: {
-    setServerHostname(hostname: string): void
-    setServerPort(port: number): void
-    setServer(hostname: string, port: number): void
-    getServer(): {
-      hostname: string
-      port: number
-    }
-
-    setSilentMode(value: boolean): void
-    getSilentMode(): boolean
+    set(value: IConfig): void
+    get(): IConfig
   }
 
   Database: {

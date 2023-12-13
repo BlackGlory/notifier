@@ -62,5 +62,8 @@ typings/
 /dist
 /release
 
+# Config
+/config.json
+
 # Data
 /data

@@ -1,14 +1,7 @@
 import { buildServer } from '@main/server.js'
 import * as DelightRPC from 'delight-rpc'
 import { go } from '@blackglory/prelude'
-import {
-  getServer
-, getSilentMode
-, setServer
-, setSilentMode
-, setServerHostname
-, setServerPort
-} from '@main/config.js'
+import { Config } from '@main/utils/config.js'
 import {
   addNotifications
 , deleteNotification
@@ -18,11 +11,15 @@ import {
 import { IAppMainAPI, IAppRendererAPI, INotification, INotificationRecord, INotificationRendererAPI } from '@src/contract.js'
 import { FastifyInstance } from 'fastify'
 import { createTimeBasedId, stringifyTimeBasedId } from '@main/utils/create-id.js'
+import { bind } from 'extra-proxy'
 
-export function createAppMainAPI({ appRendererAPI, notificationRendererAPI }: {
-  appRendererAPI: DelightRPC.ClientProxy<IAppRendererAPI>
-  notificationRendererAPI: DelightRPC.ClientProxy<INotificationRendererAPI>
-}): IAppMainAPI {
+export function createAppMainAPI(
+  { config, appRendererAPI, notificationRendererAPI }: {
+    config: Config
+    appRendererAPI: DelightRPC.ClientProxy<IAppRendererAPI>
+    notificationRendererAPI: DelightRPC.ClientProxy<INotificationRendererAPI>
+  }
+): DelightRPC.ImplementationOf<IAppMainAPI> {
   return {
     ping() {
       return 'pong'
@@ -33,11 +30,14 @@ export function createAppMainAPI({ appRendererAPI, notificationRendererAPI }: {
       return {
         async startServer(host, port) {
           server = await buildServer({
-            notify(notifications) {
+            async notify(notifications) {
               const records = notifications.map(createNotificationRecord)
-              if (!getSilentMode()) {
+
+              const { silentMode } = await config.get()
+              if (!silentMode) {
                 notificationRendererAPI.notify(records)
               }
+
               appRendererAPI.notify(records)
               addNotifications(records)
             }
@@ -54,14 +54,7 @@ export function createAppMainAPI({ appRendererAPI, notificationRendererAPI }: {
       }
     })
 
-  , Config: {
-      getServer
-    , setServer
-    , setServerHostname
-    , setServerPort
-    , getSilentMode
-    , setSilentMode
-    }
+  , Config: bind(config)
   
   , Database: {
       addNotifications

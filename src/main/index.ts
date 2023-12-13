@@ -9,14 +9,14 @@ import { createAppMainAPI } from './apis/app.js'
 import { createNotificationMainAPI } from './apis/notification.js'
 import * as DelightRPC from 'delight-rpc'
 import { Deferred } from 'extra-promise'
-import { initConfig } from './config.js'
 import { openDatabase } from './database.js'
 import { IAppRendererAPI, INotificationRendererAPI } from '@src/contract.js'
+import { Config } from './utils/config.js'
 
 go(async () => {
   preventMultipleInstances()
 
-  initConfig()
+  const config = new Config()
   openDatabase()
 
   await app.whenReady()
@@ -41,7 +41,8 @@ go(async () => {
     port.start()
     createServerInMain(
       createAppMainAPI({
-        appRendererAPI: await appRendererClient
+        config
+      , appRendererAPI: await appRendererClient
       , notificationRendererAPI: await notificationRendererClient
       })
     , port
