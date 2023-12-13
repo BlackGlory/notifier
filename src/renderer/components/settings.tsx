@@ -36,7 +36,7 @@ function Config() {
   })
 
   return (
-    <div className='m-5'>
+    <div className='p-5'>
       <Headline>HTTP Server</Headline>
       <div className='space-y-4'>
         <div className='max-w-md grid grid-cols-4 gap-y-2 gap-x-2 items-center'>

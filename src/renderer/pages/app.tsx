@@ -36,15 +36,15 @@ export function AppPage() {
             <Tab
               key={tab.id}
               className={({ selected }) => classNames(
-                'text-gray-800 bg-gray-300 hover:bg-gray-200 w-full h-20 flex flex-col justify-center items-center border-b-2'
+                'text-gray-800 bg-gray-300 hover:bg-gray-200 w-full h-20 flex flex-col justify-center items-center border-b-2 outline-none'
               , selected ? 'border-blue-500': 'border-transparent'
               )}
             >{tab.header}</Tab>
           ))}
         </Tab.List>
-        <Tab.Panels className='h-full overflow-y-auto'>
+        <Tab.Panels className='overflow-hidden'>
           {tabs.map(tab => (
-            <Tab.Panel key={tab.id}>
+            <Tab.Panel key={tab.id} className='h-full overflow-y-auto'>
               {tab.content}
             </Tab.Panel>
           ))}
