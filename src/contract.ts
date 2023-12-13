@@ -6,13 +6,21 @@ export interface IConfig {
 , silentMode: boolean
 }
 
+export enum ServerState {
+  Starting
+, Running
+, Stopping
+, Stopped
+, Error
+}
+
 export interface IAppMainAPI {
   ping(): string
 
   Server: {
-    startServer(hostname: string, port: number): void
-    stopServer(): void
-    isServerRunning(): boolean
+    start(hostname: string, port: number): void
+    stop(): void
+    getState(): ServerState
   }
 
   Config: {
@@ -42,17 +50,24 @@ export interface IAppMainAPI {
 
 export interface INotificationMainAPI {
   ping(): string
+
   resizeWindow(width: number, height: number): void
 }
 
 export interface INotificationRendererAPI{
   ping(): string
+
   notify(notifications: INotificationRecord[]): void
 }
 
 export interface IAppRendererAPI {
   ping(): string
+
   notify(notifications: INotificationRecord[]): void
+}
+
+export interface IServerAPI {
+  notify: (notifications: INotification[]) => void
 }
 
 export interface INotificationRecord {
@@ -64,10 +79,6 @@ export interface INotificationRecord {
   iconUrl?: string
   imageUrl?: string
   url?: string
-}
-
-export interface IServerAPI {
-  notify: (notifications: INotification[]) => void
 }
 
 export interface INotification {

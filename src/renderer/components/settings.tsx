@@ -5,6 +5,8 @@ import { useEffectAsync, useMountAsync } from 'extra-react-hooks'
 import { useSelector, useUpdater } from 'extra-react-store'
 import { ConfigStore, ConfigStoreContext } from '@renderer/utils/config-store.js'
 import { Loading } from '@components/loading.jsx'
+import { ServerState } from '@src/contract.js'
+import { go, isUndefined } from '@blackglory/prelude'
 
 export function Settings() {
   const mainAPI = useContext(MainAPIContext)
@@ -28,11 +30,10 @@ function Config() {
   const mainAPI = useContext(MainAPIContext)
   const config = useSelector(ConfigStoreContext, state => state)
   const updateConfig = useUpdater(ConfigStoreContext)
-  const [isServerRunning, setIsServerRunning] = useState<boolean>(false)
+  const [serverState, setServerState] = useState<ServerState>()
 
   useMountAsync(async () => {
-    const isServerRunning = await mainAPI.Server.isServerRunning()
-    setIsServerRunning(isServerRunning)
+    setServerState(await mainAPI.Server.getState())
   })
 
   return (
@@ -42,7 +43,7 @@ function Config() {
         <div className='max-w-md grid grid-cols-4 gap-y-2 gap-x-2 items-center'>
           <label className=''>Hostname</label>
           <input type='text' className='px-1 py-0.5 border col-span-3'
-            disabled={isServerRunning}
+            disabled={serverState === ServerState.Running}
             value={config.server.hostname}
             onChange={event => {
               const hostname = event.target.value
@@ -54,7 +55,7 @@ function Config() {
 
           <label className=''>Port</label>
           <input type='number' className='p-1 py-0.5 border col-span-3'
-            disabled={isServerRunning}
+            disabled={serverState === ServerState.Running}
             value={config.server.port}
             onChange={event => {
               const port = event.target.valueAsNumber
@@ -67,31 +68,61 @@ function Config() {
 
         <div className='space-y-2'>
           <div>
-            {`Server Status: ${isServerRunning ? 'Running' : 'Stopped'}`}
-          </div>
-          <Switch
-            checked={isServerRunning}
-            onChange={async enabled => {
-              if (enabled) {
-                await mainAPI.Server.startServer(config.server.hostname, config.server.port)
-              } else {
-                await mainAPI.Server.stopServer()
+            Server Status: {go(() => {
+              switch (serverState) {
+                case ServerState.Starting: return 'Starting'
+                case ServerState.Running: return 'Running'
+                case ServerState.Stopping: return 'Stopping'
+                case ServerState.Stopped: return 'Stopped'
+                case ServerState.Error: return 'Error'
+                default: return 'Unknown'
               }
-              setIsServerRunning(enabled)
+            })}
+          </div>
+          <button
+            className='bg-gray-300 py-1 px-2'
+            disabled={
+              isUndefined(serverState) ||
+              serverState === ServerState.Starting ||
+              serverState === ServerState.Stopping
+            }
+            onClick={async () => {
+              try {
+                switch (serverState) {
+                  case ServerState.Running: {
+                    setServerState(ServerState.Stopping)
+                    await mainAPI.Server.stop()
+                    break
+                  }
+                  case ServerState.Stopped: {
+                    setServerState(ServerState.Starting)
+                    await mainAPI.Server.start(
+                      config.server.hostname
+                    , config.server.port
+                    )
+                    break
+                  }
+                }
+              } finally {
+                setServerState(await mainAPI.Server.getState())
+              }
             }}
-            className={'bg-gray-300 py-1 px-2'}
           >
-            <span>
-              {isServerRunning ? 'Stop Server' : 'Start Server'}
-            </span>
-          </Switch>
+            {go(() => {
+              switch (serverState) {
+                case ServerState.Running: return 'Stop Server'
+                case ServerState.Stopped: return 'Start Server'
+                default: return 'Unknown'
+              }
+            })}
+          </button>
         </div>
       </div>
 
       <Headline>Silent Mode</Headline>
       <div>
         <div className='space-y-2'>
-          <div>{`Silent Mode: ${config.silentMode ? 'On' : 'Off'}`}</div>
+          <div>Silent Mode: {config.silentMode ? 'On' : 'Off'}</div>
           <Switch
             checked={config.silentMode}
             onChange={value => {

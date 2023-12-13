@@ -87,6 +87,7 @@
     "classnames": "^2.3.1",
     "delight-rpc": "^6.1.2",
     "extra-filesystem": "^0.5.1",
+    "extra-fsm": "^0.2.1",
     "extra-generator": "^0.5.3",
     "extra-promise": "^6.0.8",
     "extra-proxy": "^0.4.1",

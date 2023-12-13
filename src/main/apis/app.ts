@@ -8,10 +8,11 @@ import {
 , queryNotificationsById
 , queryNotificationsByTimestamp
 } from '@main/database.js'
-import { IAppMainAPI, IAppRendererAPI, INotification, INotificationRecord, INotificationRendererAPI } from '@src/contract.js'
+import { IAppMainAPI, IAppRendererAPI, INotification, INotificationRecord, INotificationRendererAPI, ServerState } from '@src/contract.js'
 import { FastifyInstance } from 'fastify'
 import { createTimeBasedId, stringifyTimeBasedId } from '@main/utils/create-id.js'
 import { bind } from 'extra-proxy'
+import { FiniteStateMachine } from 'extra-fsm'
 
 export function createAppMainAPI(
   { config, appRendererAPI, notificationRendererAPI }: {
@@ -26,30 +27,63 @@ export function createAppMainAPI(
     }
 
   , Server: go(() => {
+      const fsm = new FiniteStateMachine({
+        [ServerState.Stopped]: {
+          start: ServerState.Starting
+        }
+      , [ServerState.Starting]: {
+          started: ServerState.Running
+        , error: ServerState.Error
+        }
+      , [ServerState.Running]: {
+          stop: ServerState.Stopping
+        }
+      , [ServerState.Stopping]: {
+          stopped: ServerState.Stopped
+        }
+      , [ServerState.Error]: {
+          start: ServerState.Starting
+        }
+      }, ServerState.Stopped)
+
       let server: FastifyInstance | undefined
+
       return {
-        async startServer(host, port) {
-          server = await buildServer({
-            async notify(notifications) {
-              const records = notifications.map(createNotificationRecord)
+        async start(host, port) {
+          fsm.send('start')
 
-              const { silentMode } = await config.get()
-              if (!silentMode) {
-                notificationRendererAPI.notify(records)
+          try {
+            server = await buildServer({
+              async notify(notifications) {
+                const records = notifications.map(createNotificationRecord)
+
+                const { silentMode } = await config.get()
+                if (!silentMode) {
+                  notificationRendererAPI.notify(records)
+                }
+
+                appRendererAPI.notify(records)
+                addNotifications(records)
               }
+            })
 
-              appRendererAPI.notify(records)
-              addNotifications(records)
-            }
-          })
-          server.listen({ host, port })
+            await server.listen({ host, port })
+
+            fsm.send('started')
+          } catch (e) {
+            fsm.send('error')
+          }
         }
-      , stopServer() {
-          server?.close()
+      , async stop() {
+          fsm.send('stop')
+
+          await server?.close()
           server = undefined
+
+          fsm.send('stopped')
         }
-      , isServerRunning() {
-          return !!server
+      , getState() {
+          return fsm.state
         }
       }
     })
