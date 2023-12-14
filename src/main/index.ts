@@ -90,7 +90,7 @@ function setCSPHeader(): void {
     callback({
       responseHeaders: {
         ...details.responseHeaders
-      , 'Content-Security-Policy': [`default-src 'self' 'unsafe-inline'`]
+      , 'Content-Security-Policy': `default-src 'self' 'unsafe-inline'; img-src *`
       }
     })
   })
