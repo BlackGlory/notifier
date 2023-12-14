@@ -53,7 +53,7 @@ export function NotificationPage() {
     </div>
   )
 
-  function closeNotification(id: string): void {
+  function closeNotification(id: number): void {
     updateNotificationList(list => {
       const index = list.findIndex(x => x.id === id)
       if (index !== -1) {

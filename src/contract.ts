@@ -29,22 +29,15 @@ export interface IAppMainAPI {
   }
 
   Database: {
-    addNotifications(notifications: INotificationRecord[]): Promise<void> 
-    deleteNotification(id: string): Promise<void>
-    queryNotificationsById(
-      beforeThisId: string
-    , options: {
-        limit: number
-      , skip?: number
-      }
-    ): Promise<INotificationRecord[]>
-    queryNotificationsByTimestamp(
-      beforeThisTimestamp: number 
-    , options: {
-        limit: number
-      , skip?: number
-      }
-    ): Promise<INotificationRecord[]>
+    addNotifications(notifications: INotification[]): Promise<INotificationRecord[]>
+
+    deleteNotification(id: number): Promise<void>
+
+    queryNotifications(params: {
+      limit: number
+    , lastId?: number
+    , skip?: number
+    }): Promise<INotificationRecord[]>
   }
 }
 
@@ -71,14 +64,14 @@ export interface IServerAPI {
 }
 
 export interface INotificationRecord {
-  id: string
+  id: number
   timestamp: number
 
-  title?: string
-  message?: string
-  iconUrl?: string
-  imageUrl?: string
-  url?: string
+  title: string | null
+  message: string | null
+  iconUrl: string | null
+  imageUrl: string | null
+  url: string | null
 }
 
 export interface INotification {

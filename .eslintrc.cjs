@@ -15,7 +15,6 @@ module.exports = {
   ]
 , rules: {
     'no-constant-condition': 'off'
-  , 'no-async-promise-executor': 'off'
   , 'no-inner-declarations': 'off'
   , 'no-undef': 'off'
   , '@typescript-eslint/no-inferrable-types': 'off'

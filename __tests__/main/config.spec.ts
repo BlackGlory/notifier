@@ -1,5 +1,5 @@
 import { describe, test, expect, afterEach } from 'vitest'
-import { Config, initialConfig } from '@main/utils/config.js'
+import { Config, initialConfig } from '@main/config.js'
 import { createTempFile, remove } from 'extra-filesystem'
 
 const filename = await createTempFile()

@@ -1,20 +1,31 @@
-import { Level } from 'level'
-import { ValueStream, EntryStream } from 'level-read-stream'
-import { dropAsync, mapAsync, toArrayAsync } from 'iterable-operator'
-import { pipe } from 'extra-utils'
+import * as sqlite from 'sqlite'
+import sqlite3 from 'sqlite3'
+import { migrate } from '@blackglory/sqlite3-migrations'
+import { findMigrationFilenames, readMigrationFile } from 'migration-files'
+import { map } from 'extra-promise'
+import { isntUndefined } from 'extra-utils'
 import { assert, isUndefined } from '@blackglory/prelude'
-import { stringifyTimeBasedId } from '@main/utils/create-id.js'
-import { INotificationRecord } from '@src/contract.js'
+import { INotification, INotificationRecord } from '@src/contract.js'
 import { getDataPath } from '@main/utils/paths.js'
 
-let db: Level<string, INotificationRecord> | undefined
+let db: sqlite.Database<sqlite3.Database, sqlite3.Statement> | undefined
 
-export function openDatabase(filename: string = getDataPath('data')): void {
+export async function openDatabase(
+  filename: string = getDataPath('data')
+): Promise<void> {
   if (db) throw new Error('Database is opened')
 
-  db = new Level(filename, {
-    valueEncoding: 'json'
+  const migrations = await map(
+    await findMigrationFilenames('./migrations')
+  , readMigrationFile
+  )
+
+  db = await sqlite.open({
+    filename
+  , driver: sqlite3.Database
   })
+
+  await migrate(db.getDatabaseInstance(), migrations)
 }
 
 export async function closeDatabase(): Promise<void> {
@@ -24,70 +35,102 @@ export async function closeDatabase(): Promise<void> {
   db = undefined
 }
 
-export async function addNotifications(notifications: INotificationRecord[]): Promise<void> {
+export async function addNotifications(
+  notifications: INotification[]
+): Promise<INotificationRecord[]> {
   assert(db, 'Database is not opened')
 
-  await db.batch(notifications.map(notification => ({
-    type: 'put'
-  , key: notification.id
-  , value: notification
-  })))
+  const timestamp = Date.now()
+  const results: INotificationRecord[] = []
+  for (const notification of notifications) {
+    const result = await db.run(`
+      INSERT INTO notification (timestamp, title, message, icon_url, image_url, url)
+      VALUES ($timestamp, $title, $message, $iconUrl, $imageUrl, $url)
+    `, {
+      $timestamp: timestamp
+    , $title: notification.title
+    , $message: notification.message
+    , $iconUrl: notification.iconUrl
+    , $imageUrl: notification.imageUrl
+    , $url: notification.url
+    })
+
+    const id = result.lastID
+    assert(isntUndefined(id))
+
+    results.push({
+      id
+    , timestamp
+    , title: notification.title ?? null
+    , message: notification.message ?? null
+    , iconUrl: notification.iconUrl ?? null
+    , imageUrl: notification.imageUrl ?? null
+    , url: notification.url ?? null
+    })
+  }
+  return results
+}
+
+export async function deleteNotification(id: number): Promise<void> {
+  assert(db, 'Database is not opened')
+
+  await db.run(`
+    DELETE FROM notification
+     WHERE id = $id
+  `, { $id: id })
 }
 
 export async function getAllNotifications(): Promise<INotificationRecord[]> {
   assert(db, 'Database is not opened')
   
-  return await pipe(
-    new ValueStream(db, { reverse: true })
-  , notifications => mapAsync(notifications, notification => notification as any as INotificationRecord)
-  , toArrayAsync
-  )
+  return await db.all<INotificationRecord[]>(`
+    SELECT id
+         , timestamp
+         , title
+         , message
+         , icon_url as iconUrl
+         , image_url as imageUrl
+         , url
+      FROM notification
+     ORDER BY id ASC
+  `)
 }
 
-export async function queryNotificationsById(
-  beforeThisId: string
-, { limit, skip = 0 }: {
+export async function queryNotifications(
+  { limit, offset = 0, lastId }: {
     limit: number
-  , skip?: number
+    offset?: number
+    lastId?: number
   }
 ): Promise<INotificationRecord[]> {
   assert(db, 'Database is not opened')
 
-  return await pipe(
-    new EntryStream(db, {
-      reverse: true
-    , limit: limit + skip
-    , lt: beforeThisId
-    })
-  , items => mapAsync(items, item => (item as any as { key: string, value: INotificationRecord }).value)
-  , notifications => dropAsync(notifications, skip)
-  , toArrayAsync
-  )
-}
-
-export async function queryNotificationsByTimestamp(
-  beforeThisTimestamp: number 
-, { limit, skip = 0 }: {
-    limit: number
-  , skip?: number
+  if (isntUndefined(lastId)) {
+    return await db.all<INotificationRecord[]>(`
+      SELECT id
+           , timestamp
+           , title
+           , message
+           , icon_url as iconUrl
+           , image_url as imageUrl
+           , url
+        FROM notification
+       WHERE id < $lastId
+       ORDER BY id DESC
+       LIMIT $limit OFFSET $offset
+    `, { $limit: limit, $offset: offset, $lastId: lastId })
+  } else {
+    return await db.all<INotificationRecord[]>(`
+      SELECT id
+           , timestamp
+           , title
+           , message
+           , icon_url as iconUrl
+           , image_url as imageUrl
+           , url
+        FROM notification
+       ORDER BY id DESC
+       LIMIT $limit OFFSET $offset
+    `, { $limit: limit, $offset: offset })
   }
-): Promise<INotificationRecord[]> {
-  assert(db, 'Database is not opened')
-
-  return await pipe(
-    new EntryStream(db, {
-      reverse: true
-    , limit: limit + skip
-    , lt: stringifyTimeBasedId([beforeThisTimestamp, 0])
-    })
-  , items => mapAsync(items, item => (item as any as { key: string, value: INotificationRecord }).value)
-  , notifications => dropAsync(notifications, skip)
-  , toArrayAsync
-  )
-}
-
-export async function deleteNotification(id: string): Promise<void> {
-  assert(db, 'Database is not opened')
-
-  await db.del(id)
 }

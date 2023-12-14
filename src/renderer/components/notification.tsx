@@ -2,11 +2,11 @@ import classNames from 'classnames'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 
 interface INotificationProps {
-  title?: string
-  message?: string
-  iconUrl?: string
-  imageUrl?: string
-  timestamp?: number
+  title?: string | null
+  message?: string | null
+  iconUrl?: string | null
+  imageUrl?: string | null
+  timestamp?: number | null
 
   onClick?: () => void
   onCloseButtonClick?: () => void

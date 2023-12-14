@@ -1,5 +1,4 @@
 import { app, ipcMain, session } from 'electron'
-import { go } from '@blackglory/prelude'
 import { setupTray } from './tray.js'
 import { createAppWindow } from '@windows/app.js'
 import { createNotificationWindow } from '@windows/notification.js'
@@ -11,67 +10,65 @@ import * as DelightRPC from 'delight-rpc'
 import { Deferred } from 'extra-promise'
 import { openDatabase } from './database.js'
 import { IAppRendererAPI, INotificationRendererAPI } from '@src/contract.js'
-import { Config } from './utils/config.js'
+import { Config } from './config.js'
 
-go(async () => {
-  preventMultipleInstances()
+preventMultipleInstances()
 
-  const config = new Config()
-  openDatabase()
+const config = new Config()
+await openDatabase()
 
-  await app.whenReady()
+await app.whenReady()
 
-  setCSPHeader()
+setCSPHeader()
 
-  const {
-    window: notificationWindow
-  , load: loadNotificationWindow
-  } = createNotificationWindow()
-  const {
-    window: appWindow
-  , load: loadAppWindow
-  } = createAppWindow()
-  setupTray(appWindow)
+const {
+  window: notificationWindow
+, load: loadNotificationWindow
+} = createNotificationWindow()
+const {
+  window: appWindow
+, load: loadAppWindow
+} = createAppWindow()
+setupTray(appWindow)
 
-  const notificationRendererClient = new Deferred<DelightRPC.ClientProxy<INotificationRendererAPI>>()
-  const appRendererClient = new Deferred<DelightRPC.ClientProxy<IAppRendererAPI>>()
+const notificationRendererClient = new Deferred<DelightRPC.ClientProxy<INotificationRendererAPI>>()
+const appRendererClient = new Deferred<DelightRPC.ClientProxy<IAppRendererAPI>>()
 
-  ipcMain.on('app-message-port-for-server', async event => {
-    const [port] = event.ports
-    port.start()
-    createServerInMain(
-      createAppMainAPI({
-        config
-      , appRendererAPI: await appRendererClient
-      , notificationRendererAPI: await notificationRendererClient
-      })
-    , port
-    )
-  })
-
-  ipcMain.on('notification-message-port-for-server', event => {
-    const [port] = event.ports
-    port.start()
-    createServerInMain(createNotificationMainAPI(notificationWindow), port)
-  })
-
-  ipcMain.on('app-message-port-for-client', async event => {
-    const [port] = event.ports
-    port.start()
-    const [client] = createClientInMain<IAppRendererAPI>(port)
-    appRendererClient.resolve(client)
-  })
-
-  ipcMain.on('notification-message-port-for-client', async event => {
-    const [port] = event.ports
-    port.start()
-    const [client] = createClientInMain<INotificationRendererAPI>(port)
-    notificationRendererClient.resolve(client)
-  })
-
-  await loadNotificationWindow()
-  await loadAppWindow()
+ipcMain.on('app-message-port-for-server', async event => {
+  const [port] = event.ports
+  port.start()
+  createServerInMain(
+    createAppMainAPI({
+      config
+    , appRendererAPI: await appRendererClient
+    , notificationRendererAPI: await notificationRendererClient
+    })
+  , port
+  )
 })
+
+ipcMain.on('notification-message-port-for-server', event => {
+  const [port] = event.ports
+  port.start()
+  createServerInMain(createNotificationMainAPI(notificationWindow), port)
+})
+
+ipcMain.on('app-message-port-for-client', async event => {
+  const [port] = event.ports
+  port.start()
+  const [client] = createClientInMain<IAppRendererAPI>(port)
+  appRendererClient.resolve(client)
+})
+
+ipcMain.on('notification-message-port-for-client', async event => {
+  const [port] = event.ports
+  port.start()
+  const [client] = createClientInMain<INotificationRendererAPI>(port)
+  notificationRendererClient.resolve(client)
+})
+
+await loadNotificationWindow()
+await loadAppWindow()
 
 function preventMultipleInstances(): void {
   const gotTheLock = app.requestSingleInstanceLock()

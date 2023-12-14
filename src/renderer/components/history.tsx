@@ -11,10 +11,7 @@ export function History() {
   const mainAPI = useContext(MainAPIContext)
 
   useMountAsync(async () => {
-    const notifications = await mainAPI.Database.queryNotificationsByTimestamp(
-      Date.now()
-    , { limit: 100 }
-    )
+    const notifications = await mainAPI.Database.queryNotifications({ limit: 100 })
 
     updateNotificationList(list => {
       list.push(...notifications)
@@ -54,7 +51,7 @@ export function History() {
     </div>
   )
 
-  async function deleteNotification(id: string): Promise<void> {
+  async function deleteNotification(id: number): Promise<void> {
     await mainAPI.Database.deleteNotification(id)
     updateNotificationList(list => {
       const index = list.findIndex(x => x.id === id)
