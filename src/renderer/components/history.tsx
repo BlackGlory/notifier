@@ -7,15 +7,13 @@ import { MainAPIContext } from '@renderer/app-context.js'
 import { INotificationRecord } from '@src/contract.js'
 
 export function History() {
-  const [notificationList, updateNotificationList] = useImmer<INotificationRecord[]>([])
   const mainAPI = useContext(MainAPIContext)
+  const [notificationList, updateNotificationList] = useImmer<INotificationRecord[]>([])
 
   useMountAsync(async () => {
     const notifications = await mainAPI.Database.queryNotifications({ limit: 100 })
 
-    updateNotificationList(list => {
-      list.push(...notifications)
-    })
+    updateNotificationList(notifications)
   })
 
   useMount(() => {
