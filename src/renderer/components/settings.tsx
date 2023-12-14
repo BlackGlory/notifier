@@ -4,7 +4,6 @@ import { Switch } from '@headlessui/react'
 import { useEffectAsync, useMountAsync } from 'extra-react-hooks'
 import { useSelector, useUpdater } from 'extra-react-store'
 import { ConfigStore, ConfigStoreContext } from '@renderer/utils/config-store.js'
-import { Loading } from '@components/loading.jsx'
 import { ServerState } from '@src/contract.js'
 import { go, isUndefined } from '@blackglory/prelude'
 
@@ -23,7 +22,7 @@ export function Settings() {
              <Config />
            </ConfigStoreContext.Provider>
          )
-       : <Loading />
+       : null
 }
 
 function Config() {
