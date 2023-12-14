@@ -7,6 +7,7 @@ export const initialConfig: IConfig = {
   server: {
     hostname: 'localhost'
   , port: 8080
+  , running: false
   }
 , silentMode: false
 }

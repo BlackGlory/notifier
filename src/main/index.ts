@@ -40,14 +40,17 @@ go(async () => {
   ipcMain.on('app-message-port-for-server', async event => {
     const [port] = event.ports
     port.start()
-    createServerInMain(
-      createAppMainAPI({
-        config
-      , appRendererAPI: await appRendererClient
-      , notificationRendererAPI: await notificationRendererClient
-      })
-    , port
-    )
+    const appMainAPI = createAppMainAPI({
+      config
+    , appRendererAPI: await appRendererClient
+    , notificationRendererAPI: await notificationRendererClient
+    })
+    createServerInMain(appMainAPI, port)
+
+    const { server } = await config.get()
+    if (server.running) {
+      await appMainAPI.Server.start(server.hostname, server.port)
+    }
   })
 
   ipcMain.on('notification-message-port-for-server', event => {

@@ -91,6 +91,9 @@ function Config() {
                   case ServerState.Running: {
                     setServerState(ServerState.Stopping)
                     await mainAPI.Server.stop()
+                    updateConfig(config => {
+                      config.server.running = false
+                    })
                     break
                   }
                   case ServerState.Stopped: {
@@ -99,6 +102,9 @@ function Config() {
                       config.server.hostname
                     , config.server.port
                     )
+                    updateConfig(config => {
+                      config.server.running = true
+                    })
                     break
                   }
                 }

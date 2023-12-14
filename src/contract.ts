@@ -2,6 +2,7 @@ export interface IConfig {
   server: {
     hostname: string
     port: number
+    running: boolean
   }
 , silentMode: boolean
 }

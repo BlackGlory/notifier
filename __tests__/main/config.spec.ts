@@ -22,6 +22,7 @@ describe('Config', () => {
       server: {
         hostname: '0.0.0.0'
       , port: 1080
+      , running: false
       }
     , silentMode: true
     })
@@ -30,6 +31,7 @@ describe('Config', () => {
       server: {
         hostname: '0.0.0.0'
       , port: 1080
+      , running: false
       }
     , silentMode: true
     })
@@ -41,6 +43,7 @@ describe('Config', () => {
       server: {
         hostname: '0.0.0.0'
       , port: 1080
+      , running: false
       }
     , silentMode: true
     })
