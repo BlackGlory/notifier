@@ -66,4 +66,4 @@ typings/
 /config.json
 
 # Data
-/data
+/data.db

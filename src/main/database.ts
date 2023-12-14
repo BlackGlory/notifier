@@ -11,7 +11,7 @@ import { getDataPath } from '@main/utils/paths.js'
 let db: sqlite.Database<sqlite3.Database, sqlite3.Statement> | undefined
 
 export async function openDatabase(
-  filename: string = getDataPath('data')
+  filename: string = getDataPath('data.db')
 ): Promise<void> {
   if (db) throw new Error('Database is opened')
 
