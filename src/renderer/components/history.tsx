@@ -1,17 +1,34 @@
 import { Notification } from '@components/notification.jsx'
 import { useImmer } from 'use-immer'
 import { newNotificationObservable } from '@renderer/app-context.js'
-import { useMount, useMountAsync } from 'extra-react-hooks'
-import { useContext } from 'react'
+import { useMount, useMountAsync, useIntersectionObserver } from 'extra-react-hooks'
+import { useContext, useRef } from 'react'
 import { MainAPIContext } from '@renderer/app-context.js'
 import { INotificationRecord } from '@src/contract.js'
+import { isntEmptyArray } from '@blackglory/prelude'
 
 export function History() {
   const mainAPI = useContext(MainAPIContext)
   const [notificationList, updateNotificationList] = useImmer<INotificationRecord[]>([])
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  useIntersectionObserver(async entries => {
+    if (isntEmptyArray(notificationList) && entries.some(entry => entry.isIntersecting)) {
+      const notifications = await mainAPI.Database.queryNotifications({
+        limit: 50
+      , lastId: notificationList[notificationList.length - 1].id
+      })
+
+      if (isntEmptyArray(notifications)) {
+        updateNotificationList(list => {
+          list.push(...notifications)
+        })
+      }
+    }
+  }, [bottomRef], [notificationList])
 
   useMountAsync(async () => {
-    const notifications = await mainAPI.Database.queryNotifications({ limit: 100 })
+    const notifications = await mainAPI.Database.queryNotifications({ limit: 50 })
 
     updateNotificationList(notifications)
   })
@@ -26,7 +43,7 @@ export function History() {
     return () => subscription.unsubscribe()
   })
 
-  return (
+  return <>
     <div className='py-5 mx-auto max-w-[24rem] space-y-1'>
       {Array.from(notificationList).map(notification => (
         <Notification
@@ -47,7 +64,8 @@ export function History() {
         />
       ))}
     </div>
-  )
+    <div ref={bottomRef}></div>
+  </>
 
   async function deleteNotification(id: number): Promise<void> {
     await mainAPI.Database.deleteNotification(id)

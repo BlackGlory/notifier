@@ -3876,10 +3876,10 @@ extra-rand@^0.1.1:
   resolved "https://registry.yarnpkg.com/extra-rand/-/extra-rand-0.1.5.tgz#5a3bbba6bbc8ed4e2c0c9dc66a4a2b6a309040df"
   integrity sha512-xOaelLjCoQrCjnpNHCwoKHew4Jiu2ZeFGVEce0MgFCvPoZGnu9KO/zv+OObnvV4Np8k05/Q0x1GaEqHXuveeYg==
 
-extra-react-hooks@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/extra-react-hooks/-/extra-react-hooks-0.6.3.tgz#2dd3b4841310ee1e844207ff1b69cd0701633e70"
-  integrity sha512-pT8UKd/4ldzM2oxOzU9bDksTVMoZTx3wwu5faRx0REmPPsaEnbyCRk2urApmVTB5sSK7oRoSPPhWm1VthaLbLQ==
+extra-react-hooks@^0.6.5:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/extra-react-hooks/-/extra-react-hooks-0.6.5.tgz#da1bc4424f44eaffa10e864144aa3eeef5a609b5"
+  integrity sha512-/k9rA45EtJQD8fRJzr2eU1G/K79r7fsjFsuvvU0l1rU8M24eLB9yUVa9lx5R6ZKuglH5BM+Zy2fMR2vbxVZ9Qw==
   dependencies:
     "@blackglory/prelude" "^0.3.3"
     extra-abort "^0.3.7"
