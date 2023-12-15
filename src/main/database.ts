@@ -6,7 +6,7 @@ import { map } from 'extra-promise'
 import { isntUndefined } from 'extra-utils'
 import { assert, isUndefined } from '@blackglory/prelude'
 import { INotification, INotificationRecord } from '@src/contract.js'
-import { getDataPath } from '@main/utils/paths.js'
+import { getDataPath, getResourcePath } from '@main/utils/paths.js'
 
 let db: sqlite.Database<sqlite3.Database, sqlite3.Statement> | undefined
 
@@ -16,7 +16,7 @@ export async function openDatabase(
   if (db) throw new Error('Database is opened')
 
   const migrations = await map(
-    await findMigrationFilenames('./migrations')
+    await findMigrationFilenames(getResourcePath('migrations'))
   , readMigrationFile
   )
 
