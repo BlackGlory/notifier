@@ -59,5 +59,8 @@ typings/
 # Build
 /release
 
+# Config
+/config.json
+
 # Data
-/data
+/data.db
