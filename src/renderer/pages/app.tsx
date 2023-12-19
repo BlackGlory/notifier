@@ -4,12 +4,14 @@ import { AdjustmentsVerticalIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { Tab } from '@headlessui/react'
 import classNames from 'classnames'
 
+interface ITab {
+  id: string
+  header: React.ReactNode
+  content: React.ReactNode
+}
+
 export function AppPage() {
-  const tabs: Array<{
-    id: string
-    header: React.ReactNode
-    content: React.ReactNode
-  }> = [
+  const tabs: ITab[] = [
     {
       id: 'settings'
     , header: <>
