@@ -30,15 +30,15 @@ export interface IAppMainAPI {
   }
 
   Database: {
-    addNotifications(notifications: INotification[]): Promise<INotificationRecord[]>
+    addNotifications(notifications: INotification[]): INotificationRecord[]
 
-    deleteNotification(id: number): Promise<void>
+    deleteNotification(id: number): void
 
     queryNotifications(params: {
       limit: number
       lastId?: number
       offset?: number
-    }): Promise<INotificationRecord[]>
+    }): INotificationRecord[]
   }
 }
 
