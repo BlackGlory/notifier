@@ -37,7 +37,7 @@ export interface IAppMainAPI {
     queryNotifications(params: {
       limit: number
       lastId?: number
-      skip?: number
+      offset?: number
     }): Promise<INotificationRecord[]>
   }
 }
