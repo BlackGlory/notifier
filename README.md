@@ -41,6 +41,12 @@ await fetch('http://localhost:8080', {
 })
 ```
 
+## 命令行参数
+### `--hidden`
+带有此参数启动Notifier时, Notifier的主界面不会显示.
+
+在需要将Notifier设置为开机启动项时, 该参数可能很有用.
+
 ## 开发
 ```sh
 # 在第一个终端里运行
