@@ -2,6 +2,8 @@
   "private": true,
   "version": "0.2.0",
   "name": "notifier",
+  "appId": "me.blackglory.notifier",
+  "productName": "Notifier",
   "description": "",
   "repository": "git@github.com:BlackGlory/notifier.git",
   "author": "BlackGlory <woshenmedoubuzhidao@blackglory.me>",
