@@ -1,7 +1,10 @@
+import { ImplementationOf } from 'delight-rpc'
 import { BrowserWindow, screen } from 'electron'
 import { INotificationMainAPI } from '@src/contract.js'
 
-export function createNotificationMainAPI(window: BrowserWindow): INotificationMainAPI {
+export function createNotificationMainAPI(
+  window: BrowserWindow
+): ImplementationOf<INotificationMainAPI> {
   return {
     ping() {
       return 'pong'

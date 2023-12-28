@@ -1,7 +1,8 @@
 import { newNotificationObservable } from '@renderer/notification-context.js'
 import { INotificationRendererAPI } from '@src/contract.js'
+import { ImplementationOf } from 'delight-rpc'
 
-export const api: INotificationRendererAPI = {
+export const api: ImplementationOf<INotificationRendererAPI> = {
   ping() {
     return 'pong'
   }
