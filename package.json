@@ -93,7 +93,7 @@
     "extra-generator": "^0.5.3",
     "extra-promise": "^6.0.8",
     "extra-proxy": "^0.4.1",
-    "extra-react-hooks": "^0.6.5",
+    "extra-react-hooks": "^0.6.6",
     "extra-react-store": "^0.1.6",
     "extra-utils": "^5.5.2",
     "fastify": "^4.24.3",
