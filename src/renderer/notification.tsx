@@ -11,7 +11,7 @@ import { assert } from '@blackglory/prelude'
 
 startRPCServer()
 const [client] = createRPCClient()
-client.ping()
+await client.ping()
 renderReactPage(client)
 
 function renderReactPage(client: DelightRPC.ClientProxy<INotificationMainAPI>): void {
