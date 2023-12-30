@@ -42,8 +42,8 @@ go(async () => {
     port.start()
     const appMainAPI = createAppMainAPI({
       config
-    , appRendererAPI: await appRendererClient
-    , notificationRendererAPI: await notificationRendererClient
+    , appRendererClientPromise: appRendererClient
+    , notificationRendererClientPromise: notificationRendererClient
     })
     createServerInMain(appMainAPI, port)
 
@@ -59,14 +59,14 @@ go(async () => {
     createServerInMain(createNotificationMainAPI(notificationWindow), port)
   })
 
-  ipcMain.on('app-message-port-for-client', async event => {
+  ipcMain.on('app-message-port-for-client', event => {
     const [port] = event.ports
     port.start()
     const [client] = createClientInMain<IAppRendererAPI>(port)
     appRendererClient.resolve(client)
   })
 
-  ipcMain.on('notification-message-port-for-client', async event => {
+  ipcMain.on('notification-message-port-for-client', event => {
     const [port] = event.ports
     port.start()
     const [client] = createClientInMain<INotificationRendererAPI>(port)

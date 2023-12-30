@@ -9,10 +9,10 @@ import { bind } from 'extra-proxy'
 import { FiniteStateMachine } from 'extra-fsm'
 
 export function createAppMainAPI(
-  { config, appRendererAPI, notificationRendererAPI }: {
+  { config, appRendererClientPromise, notificationRendererClientPromise }: {
     config: Config
-    appRendererAPI: DelightRPC.ClientProxy<IAppRendererAPI>
-    notificationRendererAPI: DelightRPC.ClientProxy<INotificationRendererAPI>
+    appRendererClientPromise: PromiseLike<DelightRPC.ClientProxy<IAppRendererAPI>>
+    notificationRendererClientPromise: PromiseLike<DelightRPC.ClientProxy<INotificationRendererAPI>>
   }
 ): DelightRPC.ImplementationOf<IAppMainAPI> {
   return {
@@ -44,6 +44,9 @@ export function createAppMainAPI(
 
       return {
         async start(host, port) {
+          const appRendererClient = await appRendererClientPromise
+          const notificationRendererClient = await notificationRendererClientPromise
+
           fsm.send('start')
 
           try {
@@ -53,10 +56,10 @@ export function createAppMainAPI(
 
                 const records = await addNotifications(notifications)
 
-                appRendererAPI.notify(records)
+                await appRendererClient.notify(records)
 
                 if (!silentMode) {
-                  notificationRendererAPI.notify(records)
+                  await notificationRendererClient.notify(records)
                 }
               }
             })
