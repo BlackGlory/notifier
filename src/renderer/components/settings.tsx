@@ -40,7 +40,7 @@ function _Settings() {
       <Headline>HTTP Server</Headline>
       <div className='space-y-4'>
         <div className='max-w-md grid grid-cols-4 gap-y-2 gap-x-2 items-center'>
-          <label className=''>Hostname</label>
+          <label>Hostname</label>
           <input type='text' className='px-1 py-0.5 border col-span-3'
             disabled={serverState === ServerState.Running}
             value={config.server.hostname}
@@ -52,7 +52,7 @@ function _Settings() {
             }}
           />
 
-          <label className=''>Port</label>
+          <label>Port</label>
           <input type='number' className='p-1 py-0.5 border col-span-3'
             disabled={serverState === ServerState.Running}
             value={config.server.port}
@@ -125,23 +125,21 @@ function _Settings() {
       </div>
 
       <Headline>Silent Mode</Headline>
-      <div>
-        <div className='space-y-2'>
-          <div>Silent Mode: {config.silentMode ? 'On' : 'Off'}</div>
-          <Switch
-            checked={config.silentMode}
-            onChange={value => {
-              updateConfig(config => {
-                config.silentMode = value
-              })
-            }}
-            className={'bg-gray-300 py-1 px-2'}
-          >
-            <span>
-              {config.silentMode ? 'Turn Off' : 'Turn On'}
-            </span>
-          </Switch>
-        </div>
+      <div className='space-y-2'>
+        <div>Current: {config.silentMode ? 'On' : 'Off'}</div>
+        <Switch
+          checked={config.silentMode}
+          onChange={value => {
+            updateConfig(config => {
+              config.silentMode = value
+            })
+          }}
+          className={'bg-gray-300 py-1 px-2'}
+        >
+          <span>
+            {config.silentMode ? 'Turn Off' : 'Turn On'}
+          </span>
+        </Switch>
       </div>
     </div>
   )
