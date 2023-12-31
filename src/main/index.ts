@@ -9,7 +9,7 @@ import { createNotificationMainAPI } from './apis/notification.js'
 import * as DelightRPC from 'delight-rpc'
 import { Deferred } from 'extra-promise'
 import { openDatabase } from './database.js'
-import { IAppRendererAPI, INotificationRendererAPI } from '@src/contract.js'
+import { IAppRendererAPI, IConfig, INotificationRendererAPI } from '@src/contract.js'
 import { Config } from './config.js'
 import { go } from '@blackglory/prelude'
 
@@ -17,7 +17,14 @@ import { go } from '@blackglory/prelude'
 go(async () => {
   preventMultipleInstances()
 
-  const config = new Config()
+  const config = new Config<IConfig>({
+    server: {
+      hostname: 'localhost'
+    , port: 8080
+    , running: false
+    }
+  , silentMode: false
+  })
   await openDatabase()
 
   await app.whenReady()

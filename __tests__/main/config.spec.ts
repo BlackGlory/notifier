@@ -1,5 +1,5 @@
 import { describe, test, expect, afterEach } from 'vitest'
-import { Config, initialConfig } from '@main/config.js'
+import { Config } from '@main/config.js'
 import { createTempName, remove } from 'extra-filesystem'
 
 const filename = await createTempName()
@@ -9,7 +9,8 @@ afterEach(async () => {
 
 describe('Config', () => {
   test('get', async () => {
-    const config = new Config(filename)
+    const initialConfig = { foo: 'bar' }
+    const config = new Config(initialConfig, filename)
 
     const result = await config.get()
 
@@ -17,35 +18,23 @@ describe('Config', () => {
   })
 
   test('set', async () => {
-    const config = new Config(filename)
+    const initialConfig = { foo: 'bar' }
+    const config = new Config(initialConfig, filename)
+
     await config.set({
-      server: {
-        hostname: '0.0.0.0'
-      , port: 1080
-      , running: false
-      }
-    , silentMode: true
+      foo: 'baz'
     })
 
     expect(await config.get()).toStrictEqual({
-      server: {
-        hostname: '0.0.0.0'
-      , port: 1080
-      , running: false
-      }
-    , silentMode: true
+      foo: 'baz'
     })
   })
 
   test('reset', async () => {
-    const config = new Config(filename)
+    const initialConfig = { foo: 'bar' }
+    const config = new Config(initialConfig, filename)
     await config.set({
-      server: {
-        hostname: '0.0.0.0'
-      , port: 1080
-      , running: false
-      }
-    , silentMode: true
+      foo: 'baz'
     })
 
     await config.reset()

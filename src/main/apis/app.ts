@@ -3,14 +3,14 @@ import * as DelightRPC from 'delight-rpc'
 import { go } from '@blackglory/prelude'
 import { Config } from '@main/config.js'
 import { addNotifications, deleteNotification, queryNotifications } from '@main/database.js'
-import { IAppMainAPI, IAppRendererAPI, INotificationRendererAPI, ServerState } from '@src/contract.js'
+import { IAppMainAPI, IAppRendererAPI, IConfig, INotificationRendererAPI, ServerState } from '@src/contract.js'
 import { FastifyInstance } from 'fastify'
 import { bind } from 'extra-proxy'
 import { FiniteStateMachine } from 'extra-fsm'
 
 export function createAppMainAPI(
   { config, appRendererClientPromise, notificationRendererClientPromise }: {
-    config: Config
+    config: Config<IConfig>
     appRendererClientPromise: PromiseLike<DelightRPC.ClientProxy<IAppRendererAPI>>
     notificationRendererClientPromise: PromiseLike<DelightRPC.ClientProxy<INotificationRendererAPI>>
   }
