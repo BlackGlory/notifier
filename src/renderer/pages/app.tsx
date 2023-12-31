@@ -1,6 +1,6 @@
 import { Settings } from '@components/settings.jsx'
 import { History } from '@components/history.jsx'
-import { AdjustmentsVerticalIcon, ClockIcon } from '@heroicons/react/24/outline'
+import { Cog6ToothIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { Tab } from '@headlessui/react'
 import classNames from 'classnames'
 
@@ -15,7 +15,7 @@ export function AppPage() {
     {
       id: 'settings'
     , header: <>
-        <AdjustmentsVerticalIcon className='w-7 h-7' />
+        <Cog6ToothIcon className='w-7 h-7' />
         <span>Settings</span>
       </>
     , content: <Settings />
