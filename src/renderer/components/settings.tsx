@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react'
 import { MainAPIContext } from '@renderer/app-context.js'
 import { Switch } from '@headlessui/react'
-import { useEffectAsync, useMountAsync } from 'extra-react-hooks'
+import { useMountAsync } from 'extra-react-hooks'
 import { useSelector, useUpdater } from 'extra-react-store'
 import { ConfigStore, ConfigStoreContext } from '@renderer/utils/config-store.js'
 import { ServerState } from '@src/contract.js'
@@ -11,10 +11,10 @@ export function Settings() {
   const mainAPI = useContext(MainAPIContext)
   const [store, setStore] = useState<ConfigStore>()
 
-  useEffectAsync(async () => {
-    const config = await mainAPI.Config.get()
+  useMountAsync(async signal => {
+    const config = await mainAPI.Config.get(signal)
     setStore(new ConfigStore(mainAPI, config))
-  }, [])
+  })
 
   return store
        ? (
@@ -31,8 +31,8 @@ function Config() {
   const updateConfig = useUpdater(ConfigStoreContext)
   const [serverState, setServerState] = useState<ServerState>()
 
-  useMountAsync(async () => {
-    setServerState(await mainAPI.Server.getState())
+  useMountAsync(async signal => {
+    setServerState(await mainAPI.Server.getState(signal))
   })
 
   return (
