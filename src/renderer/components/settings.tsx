@@ -19,13 +19,13 @@ export function Settings() {
   return store
        ? (
            <ConfigStoreContext.Provider value={store}>
-             <Config />
+             <_Settings />
            </ConfigStoreContext.Provider>
          )
        : null
 }
 
-function Config() {
+function _Settings() {
   const mainAPI = useContext(MainAPIContext)
   const config = useSelector(ConfigStoreContext, state => state)
   const updateConfig = useUpdater(ConfigStoreContext)
