@@ -3800,6 +3800,14 @@ extra-request@^8.5.2:
     papaparse "^5.4.1"
     url-operator "^0.3.0"
 
+extra-semver@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/extra-semver/-/extra-semver-0.2.2.tgz#0b0165a908d60b40d55a7f74782fb668b9781cf2"
+  integrity sha512-KO+5E5xPMBdz+TC11NFpu6/2fBinN3cRxuu7QOvWGCxkSdL9PIoibHRTOZg7RWmhn/QAUrypcIm+VEilMvDIEg==
+  dependencies:
+    "@blackglory/errors" "^2.3.0"
+    semver "^7.3.8"
+
 extra-sort@^0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/extra-sort/-/extra-sort-0.1.2.tgz#f1eb3fa248a429fee899faba3d322ff71602fe5d"

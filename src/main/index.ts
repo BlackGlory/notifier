@@ -12,13 +12,20 @@ import { openDatabase } from './database.js'
 import { IAppRendererAPI, IConfig, INotificationRendererAPI } from '@src/contract.js'
 import { Config } from './config.js'
 import { go } from '@blackglory/prelude'
+import { migrateConfig } from './migrate.js'
 
 // https://github.com/electron/electron/issues/40719
 go(async () => {
   preventMultipleInstances()
 
+  await app.whenReady()
+
+  setCSPHeader()
+
+  await migrateConfig()
   const config = new Config<IConfig>({
-    server: {
+    version: app.getVersion()
+  , server: {
       hostname: 'localhost'
     , port: 8080
     , running: false
@@ -26,10 +33,6 @@ go(async () => {
   , silentMode: false
   })
   await openDatabase()
-
-  await app.whenReady()
-
-  setCSPHeader()
 
   const {
     window: notificationWindow

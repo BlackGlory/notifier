@@ -95,6 +95,7 @@
     "extra-proxy": "^0.4.1",
     "extra-react-hooks": "^0.6.6",
     "extra-react-store": "^0.1.6",
+    "extra-semver": "^0.2.2",
     "extra-utils": "^5.5.2",
     "fastify": "^4.24.3",
     "immer": "^10.0.3",

@@ -1,10 +1,11 @@
 export interface IConfig {
+  version: string
   server: {
     hostname: string
     port: number
     running: boolean
   }
-, silentMode: boolean
+  silentMode: boolean
 }
 
 export enum ServerState {
