@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/BlackGlory/notifier/compare/v0.2.0...v0.2.1) (2024-01-01)
+
+
+### Features
+
+* add config migration support ([acd9ef9](https://github.com/BlackGlory/notifier/commit/acd9ef90bd3913d1bc7a310de714ec7715e56ad0))
+
+
+### Bug Fixes
+
+* param ([7021c70](https://github.com/BlackGlory/notifier/commit/7021c7035c5e48f70292d3cf35890848b2147613))
+
 ## [0.2.0](https://github.com/BlackGlory/notifier/compare/v0.1.1...v0.2.0) (2023-12-15)
 
 
