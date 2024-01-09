@@ -44,16 +44,16 @@ go(async () => {
   } = createAppWindow()
   setupTray(appWindow)
 
-  const notificationRendererClient = new Deferred<DelightRPC.ClientProxy<INotificationRendererAPI>>()
-  const appRendererClient = new Deferred<DelightRPC.ClientProxy<IAppRendererAPI>>()
+  const notificationRendererClientPromise = new Deferred<DelightRPC.ClientProxy<INotificationRendererAPI>>()
+  const appRendererClientPromise = new Deferred<DelightRPC.ClientProxy<IAppRendererAPI>>()
 
   ipcMain.on('app-message-port-for-server', async event => {
     const [port] = event.ports
     port.start()
     const appMainAPI = createAppMainAPI({
       config
-    , appRendererClientPromise: appRendererClient
-    , notificationRendererClientPromise: notificationRendererClient
+    , appRendererClientPromise
+    , notificationRendererClientPromise
     })
     createServerInMain(appMainAPI, port)
 
@@ -73,14 +73,14 @@ go(async () => {
     const [port] = event.ports
     port.start()
     const [client] = createClientInMain<IAppRendererAPI>(port)
-    appRendererClient.resolve(client)
+    appRendererClientPromise.resolve(client)
   })
 
   ipcMain.on('notification-message-port-for-client', event => {
     const [port] = event.ports
     port.start()
     const [client] = createClientInMain<INotificationRendererAPI>(port)
-    notificationRendererClient.resolve(client)
+    notificationRendererClientPromise.resolve(client)
   })
 
   await loadNotificationWindow()
