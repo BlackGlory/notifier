@@ -35,15 +35,20 @@ export async function closeDatabase(): Promise<void> {
   db = undefined
 }
 
+function getDatabase(): sqlite.Database<sqlite3.Database, sqlite3.Statement> {
+  assert(db, 'Database is not opened')
+
+  return db
+}
+
 export async function addNotifications(
   notifications: INotification[]
 ): Promise<INotificationRecord[]> {
-  assert(db, 'Database is not opened')
-
   const timestamp = Date.now()
+
   const results: INotificationRecord[] = []
   for (const notification of notifications) {
-    const result = await db.run(`
+    const result = await getDatabase().run(`
       INSERT INTO notification (timestamp, title, message, icon_url, image_url, url)
       VALUES ($timestamp, $title, $message, $iconUrl, $imageUrl, $url)
     `, {
@@ -68,22 +73,19 @@ export async function addNotifications(
     , url: notification.url ?? null
     })
   }
+
   return results
 }
 
 export async function deleteNotification(id: number): Promise<void> {
-  assert(db, 'Database is not opened')
-
-  await db.run(`
+  await getDatabase().run(`
     DELETE FROM notification
      WHERE id = $id
   `, { $id: id })
 }
 
 export async function getAllNotifications(): Promise<INotificationRecord[]> {
-  assert(db, 'Database is not opened')
-  
-  return await db.all<INotificationRecord[]>(`
+  return await getDatabase().all<INotificationRecord[]>(`
     SELECT id
          , timestamp
          , title
@@ -103,10 +105,8 @@ export async function queryNotifications(
     lastId?: number
   }
 ): Promise<INotificationRecord[]> {
-  assert(db, 'Database is not opened')
-
   if (isntUndefined(lastId)) {
-    return await db.all<INotificationRecord[]>(`
+    return await getDatabase().all<INotificationRecord[]>(`
       SELECT id
            , timestamp
            , title
@@ -120,7 +120,7 @@ export async function queryNotifications(
        LIMIT $limit OFFSET $offset
     `, { $limit: limit, $offset: offset, $lastId: lastId })
   } else {
-    return await db.all<INotificationRecord[]>(`
+    return await getDatabase().all<INotificationRecord[]>(`
       SELECT id
            , timestamp
            , title
