@@ -5,11 +5,12 @@ import { useResizeObserver, useMount } from 'extra-react-hooks'
 import { useImmer } from 'use-immer'
 import { newNotificationObservable } from '@renderer/notification-context.js'
 import { INotificationRecord } from '@src/contract.js'
+import { assert } from '@blackglory/prelude'
 
 export function NotificationPage() {
   const [notificationList, updateNotificationList] = useImmer<INotificationRecord[]>([])
   const mainAPI = useContext(MainAPIContext)
-  const container = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useMount(() => {
     const subscription = newNotificationObservable.subscribe(newNotifications => {
@@ -23,14 +24,14 @@ export function NotificationPage() {
 
   useResizeObserver(() => {
     resizeHandler()
-  }, [container])
+  }, [containerRef])
 
   useLayoutEffect(() => {
     resizeHandler()
   }, [notificationList])
 
   return (
-    <div ref={container} className='min-w-[24rem] space-y-1'>
+    <div ref={containerRef} className='min-w-[24rem] space-y-1'>
       {Array.from(notificationList).reverse().map(notification => (
         <Notification
           key={notification.id}
@@ -63,7 +64,10 @@ export function NotificationPage() {
   }
 
   async function resizeHandler(): Promise<void> {
-    await updateWindowSize(container.current!)
+    const container = containerRef.current
+    assert(container)
+
+    await updateWindowSize(container)
   }
 
   async function updateWindowSize(element: HTMLElement): Promise<void> {
