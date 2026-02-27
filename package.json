@@ -41,7 +41,7 @@
     "@blackglory/electron-packager": "^1.0.5",
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
-    "@types/node": "18",
+    "@types/node": "22",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
