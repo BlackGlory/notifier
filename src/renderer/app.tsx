@@ -1,5 +1,4 @@
 import './styles.css'
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { AppPage } from './pages/app.jsx'
 import { createServerInRenderer, createClientInRenderer } from '@delight-rpc/electron'
@@ -20,11 +19,9 @@ function renderReactPage(client: DelightRPC.ClientProxy<IAppMainAPI>): void {
 
   const root = createRoot(main)
   root.render(
-    <StrictMode>
-      <MainAPIContext.Provider value={client}>
-        <AppPage />
-      </MainAPIContext.Provider>
-    </StrictMode>
+    <MainAPIContext.Provider value={client}>
+      <AppPage />
+    </MainAPIContext.Provider>
   )
 }
 
