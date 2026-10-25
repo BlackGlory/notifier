@@ -1,14 +1,14 @@
 import { Notification } from '@components/notification.jsx'
 import { useImmer } from 'use-immer'
 import { newNotificationObservable } from '@renderer/app-context.js'
-import { useMount, useMountAsync, useIntersectionObserver } from 'extra-react-hooks'
-import { useContext, useRef } from 'react'
+import { useMount, useMountAsync, useIntersectionObserver, useStrictContext } from 'extra-react-hooks'
+import { useRef } from 'react'
 import { MainAPIContext } from '@renderer/app-context.js'
 import { INotificationRecord } from '@src/contract.js'
 import { isntEmptyArray } from '@blackglory/prelude'
 
 export function History() {
-  const mainAPI = useContext(MainAPIContext)
+  const mainAPI = useStrictContext(MainAPIContext)
   const [notificationList, updateNotificationList] = useImmer<INotificationRecord[]>([])
   const bottomRef = useRef<HTMLDivElement>(null)
 

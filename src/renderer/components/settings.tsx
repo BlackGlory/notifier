@@ -1,14 +1,14 @@
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import { MainAPIContext } from '@renderer/app-context.js'
 import { Switch } from '@headlessui/react'
-import { useMountAsync } from 'extra-react-hooks'
+import { useMountAsync, useStrictContext } from 'extra-react-hooks'
 import { useSelector, useUpdater } from 'extra-react-store'
 import { ConfigStore, ConfigStoreContext } from '@renderer/utils/config-store.js'
 import { ServerState } from '@src/contract.js'
 import { go, isUndefined } from '@blackglory/prelude'
 
 export function Settings() {
-  const mainAPI = useContext(MainAPIContext)
+  const mainAPI = useStrictContext(MainAPIContext)
   const [store, setStore] = useState<ConfigStore>()
 
   useMountAsync(async signal => {
@@ -26,7 +26,7 @@ export function Settings() {
 }
 
 function _Settings() {
-  const mainAPI = useContext(MainAPIContext)
+  const mainAPI = useStrictContext(MainAPIContext)
   const config = useSelector(ConfigStoreContext, state => state)
   const updateConfig = useUpdater(ConfigStoreContext)
   const [serverState, setServerState] = useState<ServerState>()

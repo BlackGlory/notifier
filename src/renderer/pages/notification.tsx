@@ -1,7 +1,7 @@
-import { useRef, useContext, useLayoutEffect } from 'react'
+import { useRef, useLayoutEffect } from 'react'
 import { Notification } from '@components/notification.jsx'
 import { MainAPIContext } from '@renderer/notification-context.js'
-import { useResizeObserver, useMount } from 'extra-react-hooks'
+import { useResizeObserver, useMount, useStrictContext } from 'extra-react-hooks'
 import { useImmer } from 'use-immer'
 import { newNotificationObservable } from '@renderer/notification-context.js'
 import { INotificationRecord } from '@src/contract.js'
@@ -9,7 +9,7 @@ import { assert } from '@blackglory/prelude'
 
 export function NotificationPage() {
   const [notificationList, updateNotificationList] = useImmer<INotificationRecord[]>([])
-  const mainAPI = useContext(MainAPIContext)
+  const mainAPI = useStrictContext(MainAPIContext)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useMount(() => {
